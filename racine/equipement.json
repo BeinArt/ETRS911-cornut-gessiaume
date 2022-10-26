@@ -1,0 +1,11 @@
+{
+    "FQDN" : "nom-complet-avec-tiret",
+    "NomAffichage" : "Nom lisible",
+    "Marque" : "marque",
+    "Modele" : "model",
+    "IP" : "IP",
+    "Client" : "client",
+    "OS" : "OS",
+    "Localisation" : "dans le placard",
+    "commentaire" : "voici un commentaire"
+}

@@ -1,0 +1,7 @@
+{
+    "FQDN" : "switch.snmp.test",
+    "Version" : "V2",
+    "Communaute" : "passprojet",
+    "User" : "user",
+    "Password" : "password"
+}

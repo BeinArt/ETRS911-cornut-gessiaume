@@ -1,0 +1,11 @@
+{
+    "FQDN" : "serveur.supervision",
+    "NomAffichage" : "serveur local",
+    "Marque" : "Win",
+    "Modele" : "Win",
+    "IP" : "192.168.141.193",
+    "Client" : "",
+    "OS" : "Windows 10",
+    "Localisation" : "Baie principale",
+    "commentaire" : "importance critique"
+}

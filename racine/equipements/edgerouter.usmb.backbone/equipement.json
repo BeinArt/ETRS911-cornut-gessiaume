@@ -1,0 +1,11 @@
+{
+    "FQDN" : "edgerouter.usmb.backbone",
+    "NomAffichage" : "Edge router principale",
+    "Marque" : "Ubiquiti",
+    "Modele" : "ER6",
+    "IP" : "192.168.141.29",
+    "Client" : "USMB",
+    "OS" : "EdgeMax",
+    "Localisation" : "Baie principale",
+    "commentaire" : "importance critique"
+}
