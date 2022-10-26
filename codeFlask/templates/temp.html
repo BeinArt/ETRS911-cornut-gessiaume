@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>"Test Temperature</title>
+    </head>
+ 
+        <body>
+                <h1> Je suis ici </h1>
+                <p> La température de la pièce est de: {{ temp }}°.</p>
+                <p id="temp"></p>
+                <script text = "text/javascript">
+                        setInterval(function(){
+                            $.ajax({
+                                type:"GET",
+                                url:"/ajax"
+                            }).done(function(data){
+                                $('#temp').text(data);
+                            });
+                        }, 10); // Ici chaque minute
+                </script>
+        </body>
+</html>

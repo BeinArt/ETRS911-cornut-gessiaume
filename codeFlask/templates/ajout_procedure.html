@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Ajout équipement</title>
+    <meta name="Description" content="Description du site" />
+    <meta name="author" content="JB" />
+    <!-- CSS only -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+
+</head>
+
+<body>
+    <h1>Ajout procédure</h1>
+    <form id="formulaire" action="/actionAjoutProcedure" method="get">
+        <input type="hidden" id="FQDN" name="equipement" value="" readOnly="readOnly" />
+        <div class="OID">
+            <label>OID :  </label>
+            <input type="text" name="OID">
+        </div>
+
+        <div class="frequence">
+            <label>Frequence des requêtes :  </label>
+            <input type="text" name="frequence">
+        </div>
+
+        <div class="Communaute">
+            <label>Nombre de valeur a conserver :  </label>
+            <input type="text" name="valeur">
+        </div>
+
+        <div class="Unite">
+            <label>Unité :  </label>
+            <input type="text" name="Unite">
+        </div>
+
+        <button id="envoie_form" class="btn btn-primary" type="submit">Envoyer</button>
+    </form>
+    
+    <a id="retour" class="btn btn-primary" href="/">Retour</a>
+    <script type="text/javascript">
+        var url = window.location.href;
+        var url = new URL(url);
+        var equipement = url.searchParams.get("equipement");
+        if (equipement != null){
+            document.getElementById('FQDN').value = equipement;
+        };
+        
+ 
+    </script>
+
+</body>
+
+</html>

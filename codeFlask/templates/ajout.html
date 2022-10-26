@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Ajout équipement</title>
+    <meta name="Description" content="Description du site" />
+    <meta name="author" content="JB" />
+    <!-- CSS only -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+
+</head>
+
+<body>
+    <h1>Ajout equipement</h1>
+    <form id="formulaire" action="/actionAjout" method="get">
+        <div class="FQDN">
+            <p id="erreur_FQDN"></p>
+            <label>Nom FQDN (unique) :  </label>
+            <input type="text" id="FQDN" name="FQDN">
+        </div>
+
+        <div class="NomAffichage">
+            <label>Nom d'affichage :  </label>
+            <input type="text" name="NomAffichage">
+        </div>
+
+        <div class="Marque">
+            <label>Marque :  </label>
+            <input type="text" name="Marque">
+        </div>
+
+        <div class="Modele">
+            <label>Modèle:  </label>
+            <input type="text" name="Modele">
+        </div>
+
+        <div class="IP">
+            <p id="erreur_IP"></p>
+            <label>IP :  </label>
+            <input type="text" name="IP">
+        </div>
+
+        <div class="Client">
+            <label>Client :  </label>
+            <input type="text" name="Client">
+        </div>
+
+        <div class="OS">
+            <label>Operating System :  </label>
+            <input type="text" name="OS">
+        </div>
+
+        <div class="Localisation">
+            <label>Localisation :  </label>
+            <input type="text" name="Localisation">
+        </div>
+
+        <!--<div class="VersionSNMP">
+                <label>Version SNMP :  </label>
+                <input type="text" name="VersionSNMP">
+            </div>-->
+
+        <div class="VersionSNMP">
+            <label for="VersionSNMP">Version SNMP :</label>
+            <select name="VersionSNMP" id="VersionSNMP">
+                    <option class="dropdown-item" value="V3" onclick="optionV3()">V3</option>
+                    <option class="dropdown-item" value="V2" onclick="optionV2()">V2</option>
+                </select>
+        </div>
+
+
+        <div class="Communaute">
+            <label>Communauté :  </label>
+            <input type="text" name="Communaute">
+        </div>
+
+        <div class="User" id='user_case'>
+            <label>User :  </label>
+            <input type="text" name="User">
+        </div>
+
+        <div class="Password" id="password_case">
+            <label>Password :  </label>
+            <input type="password" name="Password">
+        </div>
+
+        <div class="Commentaire">
+            <label>Commentaire :  </label>
+            <input type="text" name="Commentaire">
+        </div>
+        <button id="envoie_form" class="btn btn-primary" type="submit">Envoyer</button>
+    </form>
+    
+    <a id="retour" class="btn btn-primary" href="/">Retour</a><!--
+    <a id='boutontest' class='btn btn-primary' onclick="tafonction()"></a>
+    <a id='test' class='btn btn-primary' href='/'></a>-->
+    <script type="text/javascript">
+        
+        var str = window.location.href;
+        var url = new URL(str);
+        //alert(url);
+        var search_params = new URLSearchParams(url.search);
+        if (search_params.has('manque')) {
+            var typeErreur = search_params.get('manque');
+            console.log(typeErreur);
+            //alert(typeErreur)
+            if (typeErreur == "FQDN") {
+                document.getElementById("erreur_FQDN").innerHTML = "<p id='erreur_FQDN'>Veuillez entrer un FQDN</p>";
+            } else if (typeErreur == "IP") {
+                document.getElementById("erreur_IP").innerHTML = "<p id='erreur_IP'>Veuillez entrer une IP</p>";
+            }
+        }
+
+        function optionV2()
+        {
+            document.getElementById("user_case").style.display = 'none';
+            document.getElementById("password_case").style.display = 'none';
+        }
+        function optionV3()
+        {
+            document.getElementById("user_case").style.display = 'block';
+            document.getElementById("password_case").style.display = 'block';
+        }
+        /*
+        function tafonction(){
+        // traitement
+        var nombre = 0;
+        var result = get('http://localhost:5000/Todo2/entree2').json()
+        console.log("resultat = " + result)
+        document.getElementById("test").innerHTML = "<a id='retour' class='btn btn-primary' href='/'>" + nombre + "</a>";
+        nombre = nombre + 1 ;
+        console.log(nombre)
+        setInterval(tafonction,2000); 
+        }
+        
+        setInterval(function() { 
+            //your jquery ajax code
+            var nombre = Math.random();
+            document.getElementById("test").innerHTML = "<a id='retour' class='btn btn-primary' href='/'>" + nombre + "</a>";
+            
+        }, 1000);*/
+
+
+        
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Ajout équipement</title>
+    <meta name="Description" content="Description du site" />
+    <meta name="author" content="JB" />
+    <!-- CSS only -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+
+</head>
+
+<body>
+    <h1>Ajout procédure</h1>
+    <form id="formulaire" action="/actionAjoutProcedure" method="get">
+        <input type="hidden" id="FQDN" name="equipement" value="" readOnly="readOnly" />
+        <label for="procedure">Choisir une procédure :</label>
+        <select id="procedure" onchange="getOption(this)">
+            <option>--Please choose an option--</option>
+        </select>
+        <div class="OID">
+            <label>OID :  </label>
+            <input type="text" id="OID" name="OID">
+        </div>
+
+        <div class="frequence">
+            <label>Frequence des requêtes :  </label>
+            <input type="text" id="frequence" name="frequence">
+        </div>
+
+        <div class="Communaute">
+            <label>Nombre de valeur a conserver :  </label>
+            <input type="text" id="valeur" name="valeur">
+        </div>
+
+        <div class="Unite">
+            <label>Unité :  </label>
+            <input type="text" id="unite" name="Unite">
+        </div>
+
+        <button id="envoie_form" class="btn btn-primary" type="submit">Envoyer</button>
+    </form>
+    
+    <a id="retour" class="btn btn-primary" href="/">Retour</a>
+    <script src="{{ url_for('static', filename='jquery.js') }}"></script>
+    <script>
+        $SCRIPT_ROOT = {{ request.script_root|tojson }};
+      </script>
+    <script type="text/javascript">
+        function getOption(el) {
+            const option = el.value;
+            //alert(el.value);
+            var url = window.location.href;
+            var url = new URL(url);
+            var equipement = url.searchParams.get("equipement");
+            //alert($SCRIPT_ROOT + '/retourProcedure?equipement=' + equipement + '&procedure=' + el.value);
+            $.getJSON($SCRIPT_ROOT + '/retourProcedure?equipement=' + equipement + '&procedure=' + el.value, {
+                }, function(data) {
+                console.log(data);
+                //alert(data.OID);
+                document.getElementById("OID").value = data.OID;
+                document.getElementById("frequence").value = data.frequence;
+                document.getElementById("valeur").value = data.Nbvaleurs;
+                document.getElementById("unite").value = data.Unite;
+                
+            })
+            .fail(function(data) {
+                //alert( "error" );
+                document.getElementById("OID").value = "";
+                document.getElementById("frequence").value = "";
+                document.getElementById("valeur").value = "";
+                document.getElementById("unite").value = "";
+            })
+            .always(function(data) {
+                //alert( "finished" );
+            });
+            
+        }
+        
+            
+        window.onload = function(){
+            var url = window.location.href;
+            var url = new URL(url);
+            var equipement = url.searchParams.get("equipement");
+            
+            if (equipement != null){
+                document.getElementById('FQDN').value = equipement;
+            };
+
+            $.getJSON($SCRIPT_ROOT + '/retourListProcedure?equipement=' + equipement, {
+                }, function(data) {
+                //alert(data.listeProcedure);
+                
+                var select = document.getElementById("procedure");
+                /*select.name = "ProcedureModif";
+                select.id = "ProcedureModif";
+                select.onchange = "getOption(this)";*/
+
+                for (const procedure of data.listeProcedure) {
+                    //alert(procedure);
+                    var option = document.createElement("option");
+                    option.value = procedure;
+                    option.text = procedure;
+                    option.onclick = "test()";
+                    select.appendChild(option);
+                }
+                var label = document.createElement("label");
+                label.innerHTML = "Choisir un equipement à modifier: "
+                label.htmlFor = "equipement";
+
+                document.getElementById("ListeEquipements").appendChild(label).appendChild(select);
+                
+                
+            })
+            .fail(function() {
+                alert( "error" );
+            })
+            .always(function() {
+                //alert( "finished" );
+            });
+        } 
+        
+        
+    </script>
+
+</body>
+
+</html>

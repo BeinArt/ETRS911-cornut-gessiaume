@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Ma page de Supervision</title>
+    <meta name="Description" content="Description du site" />
+    <meta name="author" content="JB" />
+    <!-- CSS only -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+
+</head>
+
+<body>
+    <h1>DashBoard</h1>
+    <div>
+        <a type="button" class="btn btn-primary" href="http://localhost:5000/ajout">Ajouter un equipement</a>
+        <a type="button" class="btn btn-primary" href="http://localhost:5000/infoSuppression">Supprimer un equipement</a>
+    </div>
+    <br></br>
+    <div id="Mon_id"></div>
+
+    <script src="{{ url_for('static', filename='jquery.js') }}"></script>
+    <script>
+        $SCRIPT_ROOT = {{ request.script_root|tojson }};
+      </script>
+    <script>
+
+      setInterval(function() {
+            
+            $.getJSON($SCRIPT_ROOT + '/returnList', {
+            }, function(data) {
+              document.getElementById('Mon_id').innerHTML = "<div id='Mon_id'></div>";
+
+              //alert(data.result.length);
+              //alert(data.result);
+              //alert(data.resultPing);
+              let listOfProducts;
+              //alert(data.result[2]);
+              const Mon_id = document.getElementById("Mon_id");   
+ 
+              // Solution 1 : création p label input : createElement + appendChild
+              longueur = data.result.length;
+              var entreeListe = 0;
+              for (let pas = 0; pas < longueur; pas++) {
+                    let balise1 = document.createElement("div");
+                    let nomEquipement = document.createElement("a");
+                    let status = document.createElement("div");
+                    balise1.style.marginTop='1.5%';
+                    balise1.style.marginBottom='1.5%';
+                    
+                    Mon_id.appendChild(balise1);
+                    
+                    balise1.appendChild(nomEquipement);
+                    balise1.appendChild(status);
+                    
+
+                    nomEquipement.style.display='inline-block';
+                    nomEquipement.textContent = data.result[pas];
+                    nomEquipement.href = "/detail?equipement=" + data.result[pas];
+
+
+                    if( data.resultPing[pas] == "0" || data.resultPing[pas] == ""){
+                        status.textContent = "Status : NOK";
+                    }else{
+                        status.textContent = "Status : OK";
+                    }
+                    status.style.display='inline-block';
+                    status.style.paddingLeft='5%';
+
+                    let IP = document.createElement("div");
+                    IP.textContent = "";
+                    IP.style.display='inline-block';
+                    IP.style.paddingLeft='5%';
+                    balise1.appendChild(IP);
+                    if( data.TouteIP[pas] != "None"){
+
+                        IP.textContent = "IP : " + data.TouteIP[pas];
+
+                    }
+
+                    let cpu = document.createElement("div");
+                    cpu.textContent = "";
+                    cpu.style.display='inline-block';
+                    cpu.style.paddingLeft='5%';
+                    balise1.appendChild(cpu);
+                    if( data.resultCPU[pas] != "None"){
+                        //let cpu = document.getElementById("div");
+                        //balise1.appendChild(cpu);
+                        cpu.textContent = "CPU : " + data.resultCPU[pas] + "%";
+                        //cpu.style.display='inline-block';
+                        //cpu.style.paddingLeft='5%';
+                    }
+                        
+                    
+                    let ram = document.createElement("div");
+                    ram.textContent = "";
+                    ram.style.display='inline-block';
+                    ram.style.paddingLeft='5%';
+                    balise1.appendChild(ram);
+                    if( data.resultRAM[pas] != "None"){
+
+                        ram.textContent = "RAM : " + data.resultRAM[pas] + data.uniteRAM[pas];
+
+                    }
+              }
+              
+            });
+            return false;
+            
+        }, 1000);
+    </script>
+
+
+</body>
+
+</html>

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Ma page de Supervision</title>
+    <meta name="Description" content="Description du site" />
+    <meta name="author" content="JB" />
+    <!-- CSS only -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+
+</head>
+
+<body>
+    <h1 id="titre"></h1>
+    <div>
+        <a type="button" id="ajout" class="btn btn-primary" href="">Ajouter une procédure</a>
+        <a type="button" id="modif" class="btn btn-primary" href="#">Modifier une procédure</a>
+        <a type="button" id="suppr" class="btn btn-primary" href="#">Supprimer une procédure</a>
+        
+    </div>
+    
+    <script>
+        var url = window.location.href;
+        var url = new URL(url);
+        var equipement = url.searchParams.get("equipement");
+        if (equipement != null){
+            document.getElementById('titre').innerText = equipement;
+        };
+        document.getElementById('ajout').href ="/ajoutProcedure?equipement=" + equipement;
+        document.getElementById('modif').href ="/modifierProcedure?equipement=" + equipement;
+        document.getElementById('suppr').href ="/supprProcedure?equipement=" + equipement;
+
+    </script>
+</body>
+
+</html>
