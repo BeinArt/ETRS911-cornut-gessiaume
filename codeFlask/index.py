@@ -94,7 +94,7 @@ def actionAjout():
     
     #on se place dans le repertoire equipements
     print(os.getcwd())
-    os.chdir("..\\racine\\equipements")
+    os.chdir("E:\\Master2\\Semestre 9\\SupervisionProject\\racine\\equipements")
     print(os.getcwd())
     #creation du dossier
     os.mkdir(FQDN)
@@ -156,7 +156,7 @@ def actionAjout():
     json.dump(testpingjsonString, file)
     file.close()
     
-    os.chdir("..\\..\\..\\")
+    os.chdir("E:\\Master2\\Semestre 9\\SupervisionProject\\racine")
     print(os.getcwd())
     return redirect('http://localhost:5000/ajout?creation=ok')
 
@@ -216,12 +216,14 @@ def actionSuppression():
 @app.route('/returnList')
 def returnList():
     listeFichiers = os.listdir("E:\\Master2\\Semestre 9\\SupervisionProject\\racine\\equipements")
+    #listeFichiers = os.listdir("G:\\Master2\\Semestre 9\\SupervisionProject\\racine\\equipements")
     
     listePing = []
     for i in listeFichiers:
         #print(i)
-        #os.chdir(f"E:\\Master2\\Semestre 9\\SupervisionProject\\racine\\equipements\\{i}\\resultats")
+        os.chdir(f"E:\\Master2\\Semestre 9\\SupervisionProject\\racine\\equipements\\{i}\\resultats")
         file = open(f"E:\\Master2\\Semestre 9\\SupervisionProject\\racine\\equipements\\{i}\\resultats\\test-ping.json", "r")
+        #file = open(f"G:\\Master2\\Semestre 9\\SupervisionProject\\racine\\equipements\\{i}\\resultats\\test-ping.json", "r")
         resultPing = json.load(file)
         file.close()
         #print(resultPing)
@@ -232,16 +234,21 @@ def returnList():
     listeCPU = []
     for i in listeFichiers:
         #print(i)
-        #os.chdir(f"E:\\Master2\\Semestre 9\\SupervisionProject\\racine\\equipements\\{i}\\resultats")
+        os.chdir(f"E:\\Master2\\Semestre 9\\SupervisionProject\\racine\\equipements\\{i}\\resultats")
         if os.path.exists(f"E:\\Master2\\Semestre 9\\SupervisionProject\\racine\\equipements\\{i}\\resultats\\test-cpu.json"):
+        #if os.path.exists(f"G:\\Master2\\Semestre 9\\SupervisionProject\\racine\\equipements\\{i}\\resultats\\test-cpu.json"):
             file = open(f"E:\\Master2\\Semestre 9\\SupervisionProject\\racine\\equipements\\{i}\\resultats\\test-cpu.json", "r")
+            #file = open(f"G:\\Master2\\Semestre 9\\SupervisionProject\\racine\\equipements\\{i}\\resultats\\test-cpu.json", "r")
             resultCPU = json.load(file)
             file.close()
             #print(resultPing)
-            resultCPU = resultCPU['Result']
-            #print(resultPing)
-            longueur = len(resultCPU)
-            listeCPU.append(resultCPU[longueur -1][0])
+            if resultCPU['Result'] != []:
+                resultCPU = resultCPU['Result']
+                #print(resultPing)
+                longueur = len(resultCPU)
+                listeCPU.append(resultCPU[longueur -1][0])
+            else:
+                listeCPU.append("None")
         else:
             listeCPU.append("None")
             
@@ -249,9 +256,11 @@ def returnList():
     listeUniteRam = []
     for i in listeFichiers:
         #print(i)
-        #os.chdir(f"E:\\Master2\\Semestre 9\\SupervisionProject\\racine\\equipements\\{i}\\resultats")
+        os.chdir(f"E:\\Master2\\Semestre 9\\SupervisionProject\\racine\\equipements\\{i}\\resultats")
         if os.path.exists(f"E:\\Master2\\Semestre 9\\SupervisionProject\\racine\\equipements\\{i}\\resultats\\test-ram.json"):
+        #if os.path.exists(f"G:\\Master2\\Semestre 9\\SupervisionProject\\racine\\equipements\\{i}\\resultats\\test-ram.json"):    
             file = open(f"E:\\Master2\\Semestre 9\\SupervisionProject\\racine\\equipements\\{i}\\resultats\\test-ram.json", "r")
+            #file = open(f"G:\\Master2\\Semestre 9\\SupervisionProject\\racine\\equipements\\{i}\\resultats\\test-ram.json", "r")
             resultRAM = json.load(file)
             file.close()
             #print(resultPing)
@@ -268,12 +277,16 @@ def returnList():
     IP = []
     for i in listeFichiers:
         if os.path.exists(f"E:\\Master2\\Semestre 9\\SupervisionProject\\racine\\equipements\\{i}\\{i}.json"):
+        #if os.path.exists(f"G:\\Master2\\Semestre 9\\SupervisionProject\\racine\\equipements\\{i}\\{i}.json"):
             file = open(f"E:\\Master2\\Semestre 9\\SupervisionProject\\racine\\equipements\\{i}\\{i}.json", "r")
+            #file = open(f"G:\\Master2\\Semestre 9\\SupervisionProject\\racine\\equipements\\{i}\\{i}.json", "r")
             lectureIP = json.load(file)
             file.close()
             IP.append(lectureIP['IP'])
 
     #print(IP)
+    os.chdir("E:\\Master2\\Semestre 9\\SupervisionProject\\racine")
+   
     return jsonify(result=listeFichiers, resultPing=listePing, uniteCPU="%", resultCPU=listeCPU, uniteRAM=listeUniteRam, resultRAM=listeRAM, TouteIP=IP)
 
 @app.route('/detail')
@@ -306,27 +319,77 @@ def actionAjoutProcedure():
     
     if(FQDN != "" and OID!= "" and frequence != "" and Unite != "" and valeur != ""):
         os.chdir(f"E:\\Master2\\Semestre 9\\SupervisionProject\\racine\\equipements\\{FQDN}\\procedures")
+        #os.chdir(f"G:\\Master2\\Semestre 9\\SupervisionProject\\racine\\equipements\\{FQDN}\\procedures")
         nom = dicoOIDConnu[OID]
         
         nomProcedure = f"test-{nom}.json"
         if os.path.exists(f"E:\\Master2\\Semestre 9\\SupervisionProject\\racine\\equipements\\{FQDN}\\procedures\\{nomProcedure}"):
+        #if os.path.exists(f"G:\\Master2\\Semestre 9\\SupervisionProject\\racine\\equipements\\{FQDN}\\procedures\\{nomProcedure}"):    
             return redirect('http://localhost:5000/detail?equipement=cisco.usmb.asa&ajout=alredyExist')
         else:
             print(f"file name : {nomProcedure} pour {FQDN}")
             
             FQDNfinal = f"{FQDN}.test.{nom}"
-            procedurejsonString = {"FQDN" : FQDNfinal,"OID" : OID,"frequence" : frequence,"Unite" : Unite,"Nbvaleurs" : valeur}
+            procedurejsonString = {"FQDN" : FQDNfinal,"OID" : OID,"Frequence" : int(frequence),"Nbvaleurs" : int(valeur),"Unite" : Unite}
             
             file = open(nomProcedure, "w")
             json.dump(procedurejsonString, file)
             file.close()
+            
+            os.chdir("..\\resultats")
+            FQDNfinal = f"{FQDN}.test.{nom}"
+            procedurejsonString = {"FQDN" : FQDNfinal,"Frequence" : int(frequence),"Nbvaleurs" : int(valeur),"Unite" : Unite,"Result" : []}
+            
+            nomResultat = f"test-{nom}.json"
+            file = open(nomResultat, "w")
+            json.dump(procedurejsonString, file)
+            file.close()
+            os.chdir("E:\\Master2\\Semestre 9\\SupervisionProject\\racine")
             return redirect('http://localhost:5000/detail?equipement=cisco.usmb.asa&ajout=ok')
     else:
+        
         return redirect('http://localhost:5000/')
 
 @app.route('/modifierProcedure')
 def modifierProcedure():
     return render_template('modifier_procedure.html')
+
+@app.route('/actionModifProcedure')
+def actionModifProcedure():
+    FQDN = request.args.get('equipement','')
+    OID = request.args.get('OID','')
+    frequence = request.args.get('frequence','')
+    Unite = request.args.get('Unite','')
+    valeur = request.args.get('valeur','')
+    nomProcedure = request.args.get('nom','')
+    
+    if(FQDN != "" and OID!= "" and frequence != "" and Unite != "" and valeur != "" and nomProcedure != ""):
+        os.chdir(f"E:\\Master2\\Semestre 9\\SupervisionProject\\racine\\equipements\\{FQDN}\\procedures")
+        #os.chdir(f"G:\\Master2\\Semestre 9\\SupervisionProject\\racine\\equipements\\{FQDN}\\procedures")
+        
+        
+        
+        if os.path.exists(f"E:\\Master2\\Semestre 9\\SupervisionProject\\racine\\equipements\\{FQDN}\\procedures\\{nomProcedure}"):
+            with open(nomProcedure, "r") as file:
+                data = json.load(file)
+                
+            file.close()
+            print(data)
+            data["Unite"] = Unite
+            data["Frequence"] = int(frequence)
+            data["Nbvaleurs"] = int(valeur)
+             
+            with open(nomProcedure, 'w') as file:
+                json.dump(data, file, indent=4)
+            file.close()
+            with open(nomProcedure, "r") as file:
+                data = json.load(file)
+            file.close()
+            print(data)
+        os.chdir("E:\\Master2\\Semestre 9\\SupervisionProject\\racine")
+        return redirect(f'http://localhost:5000/detail?equipement={FQDN}&modifProcedure=ok')
+    else:
+        return redirect(f'http://localhost:5000/detail?equipement={FQDN}')
 
 @app.route('/retourListProcedure')
 def retourListProcedure():
@@ -334,6 +397,7 @@ def retourListProcedure():
     FQDN = request.args.get('equipement','')
     if(FQDN !=""):
         listeProcedure = os.listdir(f"E:\\Master2\\Semestre 9\\SupervisionProject\\racine\\equipements\\{FQDN}\\procedures")
+        #listeProcedure = os.listdir(f"G:\\Master2\\Semestre 9\\SupervisionProject\\racine\\equipements\\{FQDN}\\procedures")
         
         for i in range(len(listeProcedure) - 1):
             if listeProcedure[i] == "connexion.json" or listeProcedure[i] == "test-ping.json":
@@ -352,8 +416,9 @@ def retourProcedure():
     FQDN = request.args.get('equipement','')
     procedure = request.args.get('procedure','')
     if(FQDN !="" and procedure !=""):
-        print(f"E:\\Master2\\Semestre 9\\SupervisionProject\\racine\\equipements\\{FQDN}\\procedures\\{procedure}")
+        #print(f"E:\\Master2\\Semestre 9\\SupervisionProject\\racine\\equipements\\{FQDN}\\procedures\\{procedure}")
         file = open(f"E:\\Master2\\Semestre 9\\SupervisionProject\\racine\\equipements\\{FQDN}\\procedures\\{procedure}", "r")
+        #file = open(f"G:\\Master2\\Semestre 9\\SupervisionProject\\racine\\equipements\\{FQDN}\\procedures\\{procedure}", "r")
         procedure = json.load(file)
         file.close()
         return procedure 
@@ -362,17 +427,33 @@ def retourProcedure():
     
     
     
+@app.route('/supprProcedure')
+def supprProcedure():
+    return render_template('suppression_procedure.html')
+    
+@app.route('/actionSupprProcedure')
+def actionSupprProcedure():
+    FQDN = request.args.get('equipement','')
+    nomProcedure = request.args.get('nom','')
+    
+    if(FQDN != "" and nomProcedure!= "" ):
+        os.chdir(f"E:\\Master2\\Semestre 9\\SupervisionProject\\racine\\equipements\\{FQDN}\\procedures")
+        #os.chdir(f"G:\\Master2\\Semestre 9\\SupervisionProject\\racine\\equipements\\{FQDN}\\procedures")
+
+        if os.path.exists(f"E:\\Master2\\Semestre 9\\SupervisionProject\\racine\\equipements\\{FQDN}\\procedures\\{nomProcedure}"):
+            os.remove(nomProcedure)
+            os.chdir(f"E:\\Master2\\Semestre 9\\SupervisionProject\\racine\\equipements\\{FQDN}\\resultats")
+            os.remove(nomProcedure)
+        os.chdir("E:\\Master2\\Semestre 9\\SupervisionProject\\racine")
+        return redirect(f'http://localhost:5000/detail?equipement={FQDN}&supprProcedure=ok')
+    else:
+        return redirect(f'http://localhost:5000/detail?equipement={FQDN}')
     
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
+@app.route('/returnInfoEquipement')
+def returnInfoEquipement():
+    FQDN = request.args.get('equipement','')
+    return jsonify(retour=FQDN)
     
 @app.route('/test')
 def test():

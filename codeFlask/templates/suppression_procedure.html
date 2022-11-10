@@ -12,34 +12,15 @@
 </head>
 
 <body>
-    <h1>Modifier procédure</h1>
-    <form id="formulaire" action="/actionModifProcedure" method="get">
+    <h1>Supprimer procédure</h1>
+    <form id="formulaire" action="/actionSupprProcedure" method="get">
         <input type="hidden" id="FQDN" name="equipement" value="" readOnly="readOnly" />
         <input type="hidden" id="nom" name="nom" value="" readOnly="readOnly" />
         <label for="procedure">Choisir une procédure :</label>
         <select id="procedure" onchange="getOption(this)">
-            <option>--Please choose an option--</option>
+            <option>--Please choose an procedure--</option>
         </select>
-        <div class="OID">
-            <label>OID :  </label>
-            <input type="text" readOnly="readOnly" id="OID" name="OID">
-        </div>
-
-        <div class="frequence">
-            <label>Frequence des requêtes :  </label>
-            <input type="text" id="frequence" name="frequence">
-        </div>
-
-        <div class="Communaute">
-            <label>Nombre de valeur a conserver :  </label>
-            <input type="text" id="valeur" name="valeur">
-        </div>
-
-        <div class="Unite">
-            <label>Unité :  </label>
-            <input type="text" id="unite" name="Unite">
-        </div>
-
+        <br></br>
         <button id="envoie_form" class="btn btn-primary" type="submit">Envoyer</button>
     </form>
     
@@ -61,18 +42,11 @@
                 console.log(data);
                 //alert(data.OID);
                 document.getElementById("nom").value = el.value;
-                document.getElementById("OID").value = data.OID;
-                document.getElementById("frequence").value = data.Frequence;
-                document.getElementById("valeur").value = data.Nbvaleurs;
-                document.getElementById("unite").value = data.Unite;
                 
             })
             .fail(function(data) {
                 //alert( "error" );
-                document.getElementById("OID").value = "";
-                document.getElementById("frequence").value = "";
-                document.getElementById("valeur").value = "";
-                document.getElementById("unite").value = "";
+                
             })
             .always(function(data) {
                 //alert( "finished" );
@@ -102,14 +76,12 @@
                 select.onchange = "getOption(this)";*/
 
                 for (const procedure of data.listeProcedure) {
-                    console.log(procedure);
-                    if (procedure != "test-ping.json"){
-                        var option = document.createElement("option");
-                        option.value = procedure;
-                        option.text = procedure;
-                        option.onclick = "test()";
-                        select.appendChild(option);
-                    }
+                    //alert(procedure);
+                    var option = document.createElement("option");
+                    option.value = procedure;
+                    option.text = procedure;
+                    option.onclick = "test()";
+                    select.appendChild(option);
                 }
                 var label = document.createElement("label");
                 label.innerHTML = "Choisir un equipement à modifier: "
