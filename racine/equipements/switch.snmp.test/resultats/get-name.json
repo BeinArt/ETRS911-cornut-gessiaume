@@ -1,0 +1,1 @@
+{"FQDN": "switch.snmp.test.get-name", "Frequence": 2, "Nbvaleurs": 5, "Unite": "String", "Result": [[null, "10-11-2022-15-45-14"], [null, "10-11-2022-15-45-17"], [null, "10-11-2022-15-45-19"], [null, "10-11-2022-15-45-21"]]}

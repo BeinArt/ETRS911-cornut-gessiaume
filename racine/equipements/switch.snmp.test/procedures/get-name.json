@@ -1,0 +1,7 @@
+{
+    "FQDN" : "switch.snmp.test.get-name",
+    "OID" : "sysDescr",
+    "Frequence" : 2,
+    "Nbvaleurs" : 5,
+    "Unite" : "String"
+}

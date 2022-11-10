@@ -12,8 +12,7 @@ import datetime
 import time
 import threading
 import subprocess
-from pysnmp.hlapi import *
-import pysnmp.hlapi as hlapi
+import pysnmp.hlapi as pysnmp
 
 taches = {}
 PATH_equipement = "racine/equipements/"
@@ -29,7 +28,7 @@ def FormatTime():
 def initialisation():
     liste_equipements = os.listdir(PATH_equipement)
     for equipement in liste_equipements:
-        with open(PATH_equipement+equipement+"/equipement.json","r") as file_equipement:
+        with open(PATH_equipement+equipement+"/"+equipement+".json","r") as file_equipement:
             adresse_ip = json.load(file_equipement)["IP"]
         file_equipement.close()
         for procedure in os.listdir(PATH_equipement+equipement+"/procedures/"):
@@ -95,32 +94,37 @@ def testsnmp(adresse,procedure,connexion,chemin,status):
         print("Process killed : "+chemin)
         return "Process killed : "+chemin
     else:
-        split = chemin.split("/")
-        with open(split[0]+"/"+split[1]+"/"+split[2]+"/"+split[3]+"/test-ping.json","r") as resultat_ping:
-            res_ping = json.load(resultat_ping)["Result"][0]
-        resultat_ping.close()
-        if res_ping:
+        if True:
             time.sleep(procedure["Frequence"])
-            now = FormatTime()
             if connexion["Version"] == "V2":
-                auth = hlapi.CommunityData(connexion["Communaute"],mpModel=1)
+                auth = pysnmp.CommunityData(connexion["Communaute"],mpModel=1)
             elif connexion["Version"] == "V3":
-                auth = hlapi.CommunityData(connexion["Communaute"]) # a faire en V3
-            # errorIndication, errorStatus, errorIndex, varBinds = cmdgen.getCmd(cmdgen.SnmpEngine(),auth,cmdgen.UdpTransportTarget((adresse, 161)),cmdgen.ObjectIdentifier(procedure["OID"]),lookupMib=False,)
-            data = hlapi.ObjectType(hlapi.ObjectIdentity(procedure["OID"]))
-            handler = hlapi.getCmd(hlapi.SnmpEngine()
-                , auth
-                , hlapi.UdpTransportTarget((adresse, 161))
-                , hlapi.ContextData()
-                , lookupMib=False
-                , *data)
-            errorIndication, errorStatus, errorIndex, varBinds = next(handler)
+                auth = pysnmp.CommunityData(connexion["Communaute"]) # a faire en V3
+            data = pysnmp.ObjectType(pysnmp.ObjectIdentity('SNMPv2-MIB',procedure["OID"],0))
+            snmpEngine = pysnmp.SnmpEngine()
+            for (errorIndication, errorStatus, errorIndex, varBinds) in pysnmp.getCmd(snmpEngine,
+                                                                                auth,
+                                                                                pysnmp.UdpTransportTarget((adresse, 161)),
+                                                                                pysnmp.ContextData(),
+                                                                                data):
+                if errorIndication or errorStatus:
+                    print(errorIndication or errorStatus)
+                    break
+                else:
+                    for oid,val in varBinds:
+                        res = str(val)
             with open(chemin,"r") as outfile:
                 results = json.load(outfile)
             outfile.close()
+            results["FQDN"] = procedure["FQDN"]
+            results["OID"] = procedure["OID"]
+            results["Frequence"] = procedure["Frequence"]
+            results["Unite"] = procedure["Unite"]
+            results["Nbvaleurs"] = procedure["Nbvaleurs"]
             with open(chemin,"w") as outfile:
-                if len(results["Result"]) == procedure["Nb valeurs"]:
+                if len(results["Result"]) == procedure["Nbvaleurs"]:
                     results["Result"].pop(0)
+                now = FormatTime()
                 results["Result"].append((res,now))
                 json.dump(results,outfile)
                 # for oid, val in varBinds:
@@ -134,7 +138,7 @@ def testsnmp(adresse,procedure,connexion,chemin,status):
             with open(chemin,"w") as outfile:
                 if len(results["Result"]) == procedure["Nb valeurs"]:
                     results["Result"].pop(0)
-                results["Result"].append((0,now))
+                results["Result"].append((res,now))
                 json.dump(results,outfile)
                 # for oid, val in varBinds:
                 #     results["Result"].append([val,now])
@@ -144,7 +148,7 @@ def testsnmp(adresse,procedure,connexion,chemin,status):
 def restart(tache):
     chemin = tache.split("/")
     equipement = chemin[2]
-    with open(PATH_equipement+equipement+"/equipement.json","r") as file_equipement:
+    with open(PATH_equipement+equipement+"/"+equipement+".json","r") as file_equipement:
             adresse_ip = json.load(file_equipement)["IP"]
     file_equipement.close()
     with open(PATH_equipement+equipement+"/procedures/connexion.json","r") as file_connexion:
@@ -161,7 +165,7 @@ def restart(tache):
         with open(PATH_equipement+equipement+"/procedures/"+procedure+".json","r") as file_proceduresnmp:
             test_snmp = json.load(file_proceduresnmp)
         file_proceduresnmp.close()
-        new_thread = threading.Thread(target=testsnmp(),args=(adresse_ip,test_snmp,connexion,PATH_equipement+equipement+"/resultats/"+procedure,taches[PATH_equipement+equipement+"/procedures/"+procedure]))
+        new_thread = threading.Thread(target=testsnmp,args=(adresse_ip,test_snmp,connexion,PATH_equipement+equipement+"/resultats/"+procedure+".json",taches[PATH_equipement+equipement+"/procedures/"+procedure+".json"]))
         new_thread.start()
         
 def garbage(tache):
@@ -213,6 +217,6 @@ initialisation()
 
 # LoadProc(10)
 
-time.sleep(20)
+time.sleep(10)
 
 KillAll()

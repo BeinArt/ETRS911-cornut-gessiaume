@@ -1,6 +1,0 @@
-{
-    "FQDN procedure" : "edgerouter.usmb.backbone.test-ping",
-    "Frequence" : 2,
-    "Nb valeurs" : 1,
-    "Unite" : "Bool"
-}

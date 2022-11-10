@@ -1,7 +1,0 @@
-{
-    "FQDN procedure" : "switch.snmp.test.test-ping",
-    "Frequence" : 5,
-    "Nb valeurs" : 20,
-    "Unite" : "Pourcentage",
-    "OID" : "1.3.6.1.4.1.9.9.109.1.1.1.1.24"
-}
