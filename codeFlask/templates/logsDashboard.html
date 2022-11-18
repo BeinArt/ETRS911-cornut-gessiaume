@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Ma page de Supervision</title>
+    <meta name="Description" content="Description du site" />
+    <meta name="author" content="JB" />
+    <!-- CSS only -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <!--icone-->
+    <link rel="icon" type="image/png" href="https://www.assurcyber.com/images/icone_rgsupervision.png">
+</head>
+
+<body style="display:inline-block;width:100%">
+   
+<div id="ensembleLogs" >
+    <div style="display: flex;">
+        <div id="Mon_id">1</div>
+        <div id="Mon_id">2</div>
+        <div id="Mon_id">3</div>
+        <div id="Mon_id">4</div>
+    </div>
+    
+    <div style="display: flex;">
+        <div id="Mon_id">1</div>
+        <div id="Mon_id">2</div>
+        <div id="Mon_id">3</div>
+        <div id="Mon_id">4</div>
+    </div>
+</div>
+    <script src="{{ url_for('static', filename='jquery.js') }}"></script>
+    <script>
+        setInterval(function() {
+            var flickerAPI = 'http://localhost:5000/retourlogsdashboard';
+            $.getJSON(flickerAPI, {})
+                .done(function(data) {
+                    //alert(data.retourlogs);
+                    remover = document.getElementById("ensembleLogs")
+                    remover.parentNode.removeChild(remover);
+                    let premiereDiv = document.createElement("table");
+                    premiereDiv.id = "ensembleLogs";
+                    premiereDiv.style = "width:100%"
+                    document.body.appendChild(premiereDiv);
+                    let liste_logs = data.retourlogs;
+                    longueur = data.retourlogs.length;
+                    var entreeListe = 0;
+                    //creation d'une liste avec le nom des equipements
+
+                    var titrelogEntier = document.createElement("tr");
+                    titrelogEntier.id = "logEntier";
+
+                        
+
+                    var titreFQDN = document.createElement("th");
+                    var titretype = document.createElement("th");
+                    var titreDate = document.createElement("th");
+                    var titrecommentaire = document.createElement("th");
+
+                    /*titreFQDN.style = "margin-right:2%";
+                    titretype.style = "margin-right:2%";
+                    titreDate.style = "margin-right:2%";
+                    titrecommentaire.style = "margin-right:2%";*/
+                        
+                        
+                    titrelogEntier.appendChild(titreFQDN);
+                    titrelogEntier.appendChild(titretype);
+                    titrelogEntier.appendChild(titreDate);
+                    titrelogEntier.appendChild(titrecommentaire);
+                        
+                    //titrelogEntier.style = "display:flex;"
+
+                    titreFQDN.textContent = "Nom";
+                    titretype.textContent = "Type";
+                    titreDate.textContent = "Date";
+                    titrecommentaire.textContent = "Commentaire";
+                    premiereDiv.appendChild(titrelogEntier);
+
+                    for (let pas = 0; pas < longueur; pas++) {
+
+                        let logEntier = document.createElement("tr");
+                        logEntier.id = "logEntier";
+
+                        
+
+                        let FQDN = document.createElement("td");
+                        let type = document.createElement("td");
+                        let Date = document.createElement("td");
+                        let commentaire = document.createElement("td");
+
+                        /*FQDN.style = "margin-right:2%";
+                        type.style = "margin-right:2%";
+                        Date.style = "margin-right:2%";
+                        commentaire.style = "margin-right:2%";*/
+                        
+                        
+                        logEntier.appendChild(FQDN);
+                        logEntier.appendChild(type);
+                        logEntier.appendChild(Date);
+                        logEntier.appendChild(commentaire);
+                        
+                        //logEntier.style = "display:flex;"
+
+                        FQDN.textContent = liste_logs[pas][0];
+                        type.textContent = liste_logs[pas][1];
+                        Date.textContent = liste_logs[pas][2];
+                        commentaire.textContent = liste_logs[pas][3];
+
+                        document.getElementById("ensembleLogs").appendChild(logEntier);
+
+                    }
+                });
+                return false;
+            }, 1000);
+    </script>
+</body>
+
+</html>

@@ -43,7 +43,7 @@ def initialisation():
                 taches[PATH_equipement+equipement+"/procedures/test-ping.json"] = 1
                 new_thread = threading.Thread(target=testping,args=(adresse_ip,test_ping,PATH_equipement+equipement+"/resultats/test-ping.json",taches[PATH_equipement+equipement+"/procedures/test-ping.json"]))
                 new_thread.start()
-                print("Starting "+PATH_equipement+equipement+"/procedures/"+procedure)
+                print("Starting : "+PATH_equipement+equipement+"/procedures/"+procedure)
             else:
                 with open(PATH_equipement+equipement+"/procedures/"+procedure,"r") as file_proceduresnmp:
                     test_snmp = json.load(file_proceduresnmp)
@@ -51,7 +51,7 @@ def initialisation():
                 taches[PATH_equipement+equipement+"/procedures/"+procedure] = 1
                 new_thread = threading.Thread(target=testsnmp,args=(adresse_ip,test_snmp,connexion,PATH_equipement+equipement+"/resultats/"+procedure,taches[PATH_equipement+equipement+"/procedures/"+procedure]))
                 new_thread.start()
-                print("Starting "+PATH_equipement+equipement+"/procedures/"+procedure)
+                print("Starting : "+PATH_equipement+equipement+"/procedures/"+procedure)
             
 def testping(adresse,procedure,chemin,status):
     if status != 1:
@@ -100,7 +100,7 @@ def testsnmp(adresse,procedure,connexion,chemin,status):
                 auth = pysnmp.CommunityData(connexion["Communaute"],mpModel=1)
             elif connexion["Version"] == "V3":
                 auth = pysnmp.CommunityData(connexion["Communaute"]) # a faire en V3
-            data = pysnmp.ObjectType(pysnmp.ObjectIdentity('SNMPv2-MIB',procedure["OID"],0))
+            data = pysnmp.ObjectType(pysnmp.ObjectIdentity("iso.org.dod.internet.mgmt.mib-2."+procedure["OID"]+".0"))
             snmpEngine = pysnmp.SnmpEngine()
             for (errorIndication, errorStatus, errorIndex, varBinds) in pysnmp.getCmd(snmpEngine,
                                                                                 auth,
@@ -109,6 +109,7 @@ def testsnmp(adresse,procedure,connexion,chemin,status):
                                                                                 data):
                 if errorIndication or errorStatus:
                     print(errorIndication or errorStatus)
+                    res = "0"
                     break
                 else:
                     for oid,val in varBinds:
@@ -174,12 +175,14 @@ def garbage(tache):
     procedure = chemin[4][0:-5]
     taches.pop(PATH_equipement+equipement+"/procedures/"+procedure+".json")
     
-def LoadProc(secondes):
-    while True:
+def LoadProc(secondes,status):
+    if status != 1:
+        print("Process killed : Load process")
+    else:
         time.sleep(secondes)
         liste_equipements = os.listdir(PATH_equipement)
         for equipement in liste_equipements:
-            with open(PATH_equipement+equipement+"/equipement.json","r") as file_equipement:
+            with open(PATH_equipement+equipement+"/"+equipement+".json","r") as file_equipement:
                 adresse_ip = json.load(file_equipement)["IP"]
             file_equipement.close()
             for procedure in os.listdir(PATH_equipement+equipement+"/procedures/"):
@@ -187,22 +190,34 @@ def LoadProc(secondes):
                     with open(PATH_equipement+equipement+"/procedures/connexion.json","r") as file_connexion:
                         connexion = json.load(file_connexion)
                     file_connexion.close()
-                elif procedure == "test-ping.json" and [PATH_equipement+equipement+"/procedures/"+procedure,1] not in taches:
+                elif procedure == "test-ping.json" and PATH_equipement+equipement+"/procedures/"+procedure not in taches:
                     with open(PATH_equipement+equipement+"/procedures/test-ping.json","r") as file_testping:
                         test_ping = json.load(file_testping)
                     file_testping.close()
                     taches[PATH_equipement+equipement+"/procedures/test-ping.json"] = 1
-                    new_thread = threading.Thread(target=testping,args= (adresse_ip,test_ping,PATH_equipement+equipement+"/resultats/test-ping.json",taches[PATH_equipement+equipement+"/procedures/test-ping.json"]))
+                    new_thread = threading.Thread(target=testping,args=(adresse_ip,test_ping,PATH_equipement+equipement+"/resultats/test-ping.json",taches[PATH_equipement+equipement+"/procedures/test-ping.json"]))
                     new_thread.start()
-                    print("Starting "+PATH_equipement+equipement+"/procedures/"+procedure)
-                elif [PATH_equipement+equipement+"/procedures/"+procedure,1] not in taches:
+                    print("Starting : "+PATH_equipement+equipement+"/procedures/"+procedure)
+                elif PATH_equipement+equipement+"/procedures/"+procedure not in taches:
                     with open(PATH_equipement+equipement+"/procedures/"+procedure,"r") as file_proceduresnmp:
                         test_snmp = json.load(file_proceduresnmp)
                     file_proceduresnmp.close()
                     taches[PATH_equipement+equipement+"/procedures/"+procedure] = 1
-                    new_thread = threading.Thread(target=testsnmp(),args=(adresse_ip,test_snmp,connexion,PATH_equipement+equipement+"/resultats/"+procedure,taches[PATH_equipement+equipement+"/procedures/"+procedure]))
+                    new_thread = threading.Thread(target=testsnmp,args=(adresse_ip,test_snmp,connexion,PATH_equipement+equipement+"/resultats/"+procedure,taches[PATH_equipement+equipement+"/procedures/"+procedure]))
                     new_thread.start()
-                    print("Starting "+PATH_equipement+equipement+"/procedures/"+procedure)
+                    print("Starting : "+PATH_equipement+equipement+"/procedures/"+procedure)
+        return ControlLoadProc(secondes, taches["LoadProcess"])
+                    
+def ControlLoadProc(secondes,status):
+    if status == 1:
+        if "LoadProcess" not in taches:
+            print("Starting : Loading process")
+            taches["LoadProcess"] = status
+    elif status == 0:
+        print("Killing : Loading process")
+        taches.pop("LoadProcess")
+    new_thread = threading.Thread(target=LoadProc,args=(5,status))
+    new_thread.start()
     
 def KillTask(key):
         taches[key] = 0
@@ -215,8 +230,23 @@ def KillAll():
 
 initialisation()
 
-# LoadProc(10)
+ControlLoadProc(5,1)
+
+time.sleep(10)
+
+KillTask("racine/equipements/switch.snmp.test/procedures/test-ping.json")
+
+time.sleep(4)
+
+KillAll()
+
+time.sleep(5)
+
+ControlLoadProc(5,1)
 
 time.sleep(10)
 
 KillAll()
+
+
+datetime.datetime()

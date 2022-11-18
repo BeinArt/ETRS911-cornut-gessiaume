@@ -6,120 +6,173 @@
     <title>Ma page de Supervision</title>
     <meta name="Description" content="Description du site" />
     <meta name="author" content="JB" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <!-- CSS only -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+    <!--icone-->
     <link rel="icon" type="image/png" href="https://www.assurcyber.com/images/icone_rgsupervision.png">
+
+
 </head>
 
-<body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" id="titre">Navbar</a>
+<body style="height: 100%; width: 100%;">
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <input class="navbar-brand" type="image" id="image" alt="Login" style="height: 2%; width: 2%;" src="https://www.assurcyber.com/images/icone_rgsupervision.png">
+        <a id="titre" class="navbar-brand" href="#">Navbar</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-      
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul class="navbar-nav mr-auto">
-            
-            
-            
-                <select class="dropdown">
-                    <option class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                      Dropdown button
-                    </option>
-                    <option class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                      <option class="dropdown-item" href="#">Action</a>
-                      <option class="dropdown-item" href="#">Another action</a>
-                      <option class="dropdown-item" href="#">Something else here</a>
-                    </option>
-                  </select>
-            
-            <li class="nav-item active">
-                <a id="ajout" class="nav-link" href="#">Ajouter une procédure</a>
-              </li>
-              <li class="nav-item">
-                  <a id="modif" class="nav-link" href="#">Modifier une procédure</a>
-              </li>
-              <li class="nav-item">
-                  <a id="suppr" class="nav-link" href="#">Supprimer une procédure</a>
-              </li>
-              <li class="nav-item">
-                <a id="retour" class="nav-link" href="/">DashBoard</a>
-              </li>
-          </ul>
-          
+            <ul class="navbar-nav mr-left">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Procédures
+            </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a id="ajout" class="dropdown-item" href="#">Ajouter</a>
+                        <a id="modif" class="dropdown-item" href="#">Modifier</a>
+                        <a id="suppr" class="dropdown-item" href="#">Supprimer</a>
+                    </div>
+                </li>
+
+            </ul>
+
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Afficher
+          </a>
+                    <div id="liste_procedures" class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <!--<a class="dropdown-item" onclick="GetInfos('test')">CPU  </a>
+                        <a class="dropdown-item" href="#">RAM  </a>
+                        <a class="dropdown-item" href="#">Debit  </a>-->
+                    </div>
+                </li>
+
+            </ul>
+            <form class="form-inline my-2 my-lg-0">
+
+                <a class="btn btn-outline-success my-2 my-sm-0" href="/">DashBoard</a>
+
+            </form>
         </div>
-      </nav>
-    <!--<h1 id="titre"></h1>-->
-    <div>
-        <!--<a type="button" id="ajout" class="btn btn-primary" href="">Ajouter une procédure</a>
-        <a type="button" id="modif" class="btn btn-primary" href="#">Modifier une procédure</a>
-        <a type="button" id="suppr" class="btn btn-primary" href="#">Supprimer une procédure</a>
-        <a id="retour" class="btn btn-primary" href="/">DashBoard</a>-->
-    </div>
-    
-    <div  style="height:500px; width:500px">
-        <canvas id="myChart"></canvas>
+    </nav>
+   
+    <div style="display:inline; height:100%; width:98%; margin:1%; display: flex;">
+        <div id="ParentCanvas" style="height:50%; width:50%; margin-left: 0%; margin-right: 1%;">
+            <canvas id="myChart"></canvas>
+            
+        </div>
+        <iframe id="logs" name="moniframe" style="float: right;height:700px; width:48%;" width="40%" height="100%" src="http://localhost:5000/logsequipement" frameborder="0" scrolling="yes">
+        </iframe> 
     </div>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="{{ url_for('static', filename='jquery.js') }}"></script>
-    <script>
-        $SCRIPT_ROOT = {{ request.script_root|tojson }};
-      </script>
-    <script>
-        
-        const labels = [
-          'January',
-          'February',
-          'March',
-          'April',
-          'May',
-          'June',
-        ];
-      
-        const data = {
-          labels: labels,
-          datasets: [{
-            label: 'CPU status',
-            backgroundColor: 'rgb(255, 99, 132)',
-            borderColor: 'rgb(255, 99, 132)',
-            data: [0, 10, 5, 2, 20, 30, 45],
-          }]
+    <!--<script>
+        $SCRIPT_ROOT = {
+            {
+                request.script_root | tojson
+            }
         };
-      
-        const config = {
-          type: 'line',
-          data: data,
-          options: {}
-        };
-    
-        const myChart = new Chart(
-          document.getElementById('myChart'),
-          config
-        );
-        
-      
+    </script>-->
+    <script>
         var url = window.location.href;
         var url = new URL(url);
         var equipement = url.searchParams.get("equipement");
-        if (equipement != null){
+        if (equipement != null) {
             document.getElementById('titre').innerText = equipement;
         };
-        document.getElementById('ajout').href ="/ajoutProcedure?equipement=" + equipement;
-        document.getElementById('modif').href ="/modifierProcedure?equipement=" + equipement;
-        document.getElementById('suppr').href ="/supprProcedure?equipement=" + equipement;
+        document.getElementById('logs').src = "http://localhost:5000/logsequipement?equipement=" + equipement;
+        document.getElementById('ajout').href = "/ajoutProcedure?equipement=" + equipement;
+        document.getElementById('modif').href = "/modifierProcedure?equipement=" + equipement;
+        document.getElementById('suppr').href = "/supprProcedure?equipement=" + equipement;
 
-        
-        window.onload = function(){
-            
-            $.getJSON($SCRIPT_ROOT + '/returnInfoEquipement?equipement=' + equipement, {
-            }, function(data) {
-              alert(data.retour)
-              
+        var flickerAPI = 'http://localhost:5000/returnProceduresEquipement?equipement=' + equipement;
+        $.getJSON(flickerAPI, {})
+            .done(function(data) {
+
+                let liste_procedures = data.procedures
+                longueur = data.procedures.length;
+                var entreeListe = 0;
+                //creation d'une liste avec le nom des equipements
+                for (let pas = 0; pas < longueur; pas++) {
+
+                    let procedures = document.createElement("a");
+                    procedures.className = "dropdown-item";
+
+                    //<a class = "dropdown-item" href = "#" > CPU < /a>
+
+                    document.getElementById('liste_procedures').appendChild(procedures);
+                    procedures.textContent = data.procedures[pas];
+                    procedures.setAttribute('onclick', "GetInfos('" + data.nomprocedures[pas] + "','" + data.procedures[pas] + "')");
+                }
+            });
+
+        function GetInfos(nom,nomraccourci){
+            //alert(nom);
+            //alert(equipement);
+            var flickerAPI = 'http://localhost:5000/returnInfoEquipement?equipement=' + equipement + '&procedures=' + nom;
+            $.getJSON(flickerAPI, {})
+                .done(function(infos) {
+                    //alert(infos.retoura);
+                    if (infos.retoura != [] && infos.retourb != []){
+                        const canvasBalise = document.getElementById("myChart");
+                        canvasBalise.remove();
+                        newCanvasBalise = document.createElement("canvas");
+                        newCanvasBalise.id = "myChart";
+                        const parent = document.getElementById("ParentCanvas");
+                        parent.appendChild(newCanvasBalise);
+                        //<canvas id="myChart"></canvas>
+                        const labels = infos.retoura;
+
+                        const data = {
+                            labels: labels,
+                            datasets: [{
+                                label: nomraccourci + ' status',
+                                backgroundColor: 'rgb(255, 99, 132)',
+                                borderColor: 'rgb(255, 99, 132)',
+                                data: infos.retourb,
+                            }]
+                        };
+
+                        const config = {
+                            type: 'line',
+                            data: data,
+                            options: {
+                                scales: {
+                                    y: {
+                                        suggestedMin: 0,
+                                        suggestedMax: 100
+                                    }
+                                }
+                            }
+                        };
+
+                        const myChart = new Chart(
+                            document.getElementById('myChart'),
+                            config
+                        );
+                    }else{
+                        alert("il n'y a aucune valeur")
+                    }
+                });
+        }
+        /*window.onload = function() {
+
+            $.getJSON($SCRIPT_ROOT + '/returnInfoEquipement?equipement=' + equipement, {}, function(data) {
+                alert(data.retour)
+
             });
             return false;
-            
-        }
+
+        }*/
         
     </script>
 </body>

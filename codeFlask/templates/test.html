@@ -12,69 +12,19 @@
 </head>
 
 <body>
-    
-    <script src="{{ url_for('static', filename='jquery.js') }}"></script>
-    <script>
-        $SCRIPT_ROOT = {{ request.script_root|tojson }};
-      </script>
-    <script>
+  <table>
 
-      setInterval(function() {
-          
-            $.getJSON($SCRIPT_ROOT + '/returnList', {
-            }, function(data) {
-              document.getElementById('Mon_id').innerHTML = "<div id='Mon_id'></div>";
-
-              //alert(data.result.length);
-              alert(data.result);
-              let listOfProducts;
-              alert(data.result[2]);
-              const Mon_id = document.getElementById("Mon_id");   
- 
-              // Solution 1 : création p label input : createElement + appendChild
-              longueur = data.result.length;
-              var entreeListe = 0;
-              for (let pas = 0; pas < longueur; pas++) {
-                    let balise = document.createElement("div");
-                    //balise = document.getElementById(pas);
-                    balise.textContent = data.result[pas];
-                    
-                    Mon_id.appendChild(balise);
-              }
-              /*
-              data.result.forEach(prod=>
-                    div = document.createElement("div"),
-                    div = document.getElementById(entreeListe),
-                    div.textContent = prod,
-                    
-                    Mon_id.appendChild(div),
-                    entreeListe = entreeListe +1
-                    /*listOfProducts += `
-                    <div>${data.result}</div>
-                    `   
-                )
-                */
-              
-                
-
-              $("#result").text(data.result[2]);
-              $("#result2").text(data.result);
-              
-            });
-            return false;
-          
-        }, 10000);
-    </script>
-      <h1>jQuery Example</h1>
-      <p><input type=text size=5 name=a> +
-         <input type=text size=5 name=b> =
-         <span id=result>?</span>
-      <p><a href=# id=calculate>calculate server side</a>
-      <p id="result2"></p>
-      <tbody id="productList"></tbody>
-      <div id="Mon_id"></div>
-    
-
+  
+  <tr> <th>Abonnement</th> <th>Durée</th> <th>Prix</th> </tr>
+  
+  <tr> <td>Chatonfdsdsfdsfsdfsdfsdfsd</td> <td>2 moisdsfsdfsdfsdfsfs</td> <td>40 €dsfsdfsdfsfsd</td> </tr>
+  
+  <tr> <td>Elasdfsdfsdfsdfsn</td> <td>6 moissdfsdfsdfsdfsd</td> <td>110 €sdfsdfsdfsdfsdf</td> </tr>
+  
+  <tr> <td>Licorsdfsdfsdfsdfsdfne</td> <td>12 msdfsdfsdfsdfois</td> <td>20sdfsdfsdfsdfsd0 €</td> </tr>
+  
+  </table>
+  
 </body>
 
 </html>

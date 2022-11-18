@@ -7,12 +7,38 @@
     <meta name="Description" content="Description du site" />
     <meta name="author" content="JB" />
     <!-- CSS only -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
     <link rel="icon" type="image/png" href="https://www.assurcyber.com/images/icone_rgsupervision.png">
 </head>
 
 <body>
-    <h1>Supprimer procédure</h1>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <input class="navbar-brand" type="image" id="image" alt="Login" style="height: 2%; width: 2%;" src="https://www.assurcyber.com/images/icone_rgsupervision.png">
+        <a id="titre" class="navbar-brand" href="#">Supprimer procédure</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-left">
+
+
+            </ul>
+
+            <ul class="navbar-nav mr-auto">
+
+
+            </ul>
+            <form class="form-inline my-2 my-lg-0">
+
+                <a class="btn btn-outline-success my-2 my-sm-0" href="/">DashBoard</a>
+
+            </form>
+        </div>
+    </nav>
+
     <form id="formulaire" action="/actionSupprProcedure" method="get">
         <input type="hidden" id="FQDN" name="equipement" value="" readOnly="readOnly" />
         <input type="hidden" id="nom" name="nom" value="" readOnly="readOnly" />
@@ -23,12 +49,16 @@
         <br></br>
         <button id="envoie_form" class="btn btn-primary" type="submit">Envoyer</button>
     </form>
-    
+
     <a id="retour" class="btn btn-primary" href="/">Retour</a>
     <script src="{{ url_for('static', filename='jquery.js') }}"></script>
-    <script>
-        $SCRIPT_ROOT = {{ request.script_root|tojson }};
-      </script>
+    <!--<script>
+        $SCRIPT_ROOT = {
+            {
+                request.script_root | tojson
+            }
+        };
+    </script>-->
     <script type="text/javascript">
         function getOption(el) {
             const option = el.value;
@@ -37,69 +67,65 @@
             var url = new URL(url);
             var equipement = url.searchParams.get("equipement");
             //alert($SCRIPT_ROOT + '/retourProcedure?equipement=' + equipement + '&procedure=' + el.value);
-            $.getJSON($SCRIPT_ROOT + '/retourProcedure?equipement=' + equipement + '&procedure=' + el.value, {
-                }, function(data) {
-                console.log(data);
-                //alert(data.OID);
-                document.getElementById("nom").value = el.value;
-                
-            })
-            .fail(function(data) {
-                //alert( "error" );
-                
-            })
-            .always(function(data) {
-                //alert( "finished" );
-            });
-            
+            $.getJSON('http://localhost:5000/retourProcedure?equipement=' + equipement + '&procedure=' + el.value, {}, function(data) {
+                    console.log(data);
+                    //alert(data.OID);
+                    document.getElementById("nom").value = el.value;
+
+                })
+                .fail(function(data) {
+                    //alert( "error" );
+
+                })
+                .always(function(data) {
+                    //alert( "finished" );
+                });
+
         }
-        
-            
-        window.onload = function(){
+
+
+        window.onload = function() {
             var url = window.location.href;
             var url = new URL(url);
             var equipement = url.searchParams.get("equipement");
-            
-            if (equipement != null){
+
+            if (equipement != null) {
                 document.getElementById('FQDN').value = equipement;
             };
-            
+
             document.getElementById('retour').href = "/detail?equipement=" + equipement;
 
-            $.getJSON($SCRIPT_ROOT + '/retourListProcedure?equipement=' + equipement, {
-                }, function(data) {
-                //alert(data.listeProcedure);
-                
-                var select = document.getElementById("procedure");
-                /*select.name = "ProcedureModif";
-                select.id = "ProcedureModif";
-                select.onchange = "getOption(this)";*/
+            $.getJSON('http://localhost:5000/retourListProcedure?equipement=' + equipement, {}, function(data) {
+                    //alert(data.listeProcedure);
 
-                for (const procedure of data.listeProcedure) {
-                    //alert(procedure);
-                    var option = document.createElement("option");
-                    option.value = procedure;
-                    option.text = procedure;
-                    option.onclick = "test()";
-                    select.appendChild(option);
-                }
-                var label = document.createElement("label");
-                label.innerHTML = "Choisir un equipement à modifier: "
-                label.htmlFor = "equipement";
+                    var select = document.getElementById("procedure");
+                    /*select.name = "ProcedureModif";
+                    select.id = "ProcedureModif";
+                    select.onchange = "getOption(this)";*/
 
-                document.getElementById("ListeEquipements").appendChild(label).appendChild(select);
-                
-                
-            })
-            .fail(function() {
-                alert( "error" );
-            })
-            .always(function() {
-                //alert( "finished" );
-            });
-        } 
-        
-        
+                    for (const procedure of data.listeProcedure) {
+                        //alert(procedure);
+                        var option = document.createElement("option");
+                        option.value = procedure;
+                        option.text = procedure;
+                        option.onclick = "test()";
+                        select.appendChild(option);
+                    }
+                    var label = document.createElement("label");
+                    label.innerHTML = "Choisir un equipement à modifier: "
+                    label.htmlFor = "equipement";
+
+                    document.getElementById("ListeEquipements").appendChild(label).appendChild(select);
+
+
+                })
+                .fail(function() {
+                    alert("error");
+                })
+                .always(function() {
+                    //alert( "finished" );
+                });
+        }
     </script>
 
 </body>

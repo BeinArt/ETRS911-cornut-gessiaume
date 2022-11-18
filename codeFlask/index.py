@@ -13,6 +13,9 @@ from os import walk
 import shutil
 import json
 
+from stat import ST_CTIME
+
+from glob import iglob
 app = Flask(__name__)
 
 
@@ -158,7 +161,7 @@ def actionAjout():
     
     os.chdir("E:\\Master2\\Semestre 9\\SupervisionProject\\racine")
     print(os.getcwd())
-    return redirect('http://localhost:5000/ajout?creation=ok')
+    return redirect('http://localhost:5000/')
 
 @app.route('/infoSuppression')
 def infoSuppression():
@@ -264,11 +267,15 @@ def returnList():
             resultRAM = json.load(file)
             file.close()
             #print(resultPing)
-            listeUniteRam.append(resultRAM['Unite'])
-            resultRAM = resultRAM['Result']
-            #print(resultPing)
-            longueur = len(resultRAM)
-            listeRAM.append(resultRAM[longueur -1][0])
+            if resultRAM['Result'] != []:
+                listeUniteRam.append(resultRAM['Unite'])
+                resultRAM = resultRAM['Result']
+                #print(resultPing)
+                longueur = len(resultRAM)
+                listeRAM.append(resultRAM[longueur -1][0])
+            else:
+                listeRAM.append("None")
+                listeUniteRam.append("None")
         else:
             listeRAM.append("None")
             listeUniteRam.append("None")
@@ -345,7 +352,7 @@ def actionAjoutProcedure():
             json.dump(procedurejsonString, file)
             file.close()
             os.chdir("E:\\Master2\\Semestre 9\\SupervisionProject\\racine")
-            return redirect('http://localhost:5000/detail?equipement=cisco.usmb.asa&ajout=ok')
+            return redirect(f'http://localhost:5000/detail?equipement={FQDN}&ajout=ok')
     else:
         
         return redirect('http://localhost:5000/')
@@ -421,6 +428,7 @@ def retourProcedure():
         #file = open(f"G:\\Master2\\Semestre 9\\SupervisionProject\\racine\\equipements\\{FQDN}\\procedures\\{procedure}", "r")
         procedure = json.load(file)
         file.close()
+        print(procedure)
         return procedure 
     else:
         return redirect('http://localhost:5000/')
@@ -453,8 +461,143 @@ def actionSupprProcedure():
 @app.route('/returnInfoEquipement')
 def returnInfoEquipement():
     FQDN = request.args.get('equipement','')
-    return jsonify(retour=FQDN)
+    procedure = request.args.get('procedures','')
     
+    file = open(f"E:\\Master2\\Semestre 9\\SupervisionProject\\racine\\equipements\\{FQDN}\\resultats\\{procedure}", "r")
+    #file = open(f"G:\\Master2\\Semestre 9\\SupervisionProject\\racine\\equipements\\{FQDN}\\procedures\\{procedure}", "r")
+    procedure = json.load(file)
+    result_procedures = procedure["Result"]
+    absyss = []
+    ordonnee = []
+    for i in range(len(result_procedures)):
+        absyss.append(result_procedures[i][1])
+        ordonnee.append(result_procedures[i][0])
+    print(absyss)
+    print(ordonnee)
+    return jsonify(retoura=absyss, retourb=ordonnee)
+
+@app.route('/returnProceduresEquipement')
+def returnProceduresEquipement():
+    FQDN = request.args.get('equipement','')
+    if(FQDN != ""):
+        os.chdir(f"E:\\Master2\\Semestre 9\\SupervisionProject\\racine\\equipements\\{FQDN}\\procedures")
+        #os.chdir(f"G:\\Master2\\Semestre 9\\SupervisionProject\\racine\\equipements\\{FQDN}\\procedures")
+        ListeNomCompletProcedure = []
+        if os.path.exists(f"E:\\Master2\\Semestre 9\\SupervisionProject\\racine\\equipements\\{FQDN}\\procedures"):
+            procedures = os.listdir(f"E:\\Master2\\Semestre 9\\SupervisionProject\\racine\\equipements\\{FQDN}\\procedures")
+            #print(procedures)
+            procedures.remove("connexion.json")
+            procedures.remove("test-ping.json")
+            for i in range(len(procedures)):
+                nom_procedure = []
+                ListeNomCompletProcedure.append(procedures[i])
+                nom_procedure = procedures[i].split(".")
+                
+                nom_procedure.remove("json")
+                
+                nom_procedure = nom_procedure[0]
+                nom_procedure = nom_procedure.split("-")
+                nom_procedure.remove("test")
+                nom_procedure = nom_procedure[0]
+                procedures[i] = nom_procedure
+                
+                
+            
+            #print(procedures)
+                
+            os.chdir("E:\\Master2\\Semestre 9\\SupervisionProject\\racine")
+            return jsonify(procedures=procedures, nomprocedures=ListeNomCompletProcedure)
+        else:
+            print("")
+    else:
+        return 0
+
+@app.route('/logsdashboard')
+def logsdashboard():
+    return render_template('logsDashboard.html')
+
+@app.route('/retourlogsdashboard')
+def retourlogsdashboard():
+    #print("infos relout logs")
+    os.chdir("E:\\Master2\\Semestre 9\\SupervisionProject\\racine\\logs")
+    #listeFichiersLogs = os.listdir("E:\\Master2\\Semestre 9\\SupervisionProject\\racine\\logs")
+    #listeFichiersLogs = [(os.stat(fname)[ST_CTIME], fname) for fname in os.listdir("E:\\Master2\\Semestre 9\\SupervisionProject\\racine\\logs") if os.path.isfile(fname)]
+    #print(listeFichiersLogs)
+    retourLogs = []
+    listeFichiersLogs = []
+
+    fichiers = []
+    for fichier in iglob("E:\\Master2\\Semestre 9\\SupervisionProject\\racine\\logs\\*.json"):
+        if os.path.isfile(fichier):
+            fichiers.append([fichier, os.path.getmtime(fichier)])
+    
+    fichiers.sort(key=lambda elem: elem[1], reverse=True) # tri par date avec date récente au début
+    #print(fichiers)
+    for i in range(len(fichiers)):
+        listeFichiersLogs.append(fichiers[i][0])
+        
+    for i in listeFichiersLogs:
+        #print(i)
+        #file = open(f"E:\\Master2\\Semestre 9\\SupervisionProject\\racine\\logs\\{i}", "r")
+        file = open(f"{i}", "r")
+        #file = open(f"G:\\Master2\\Semestre 9\\SupervisionProject\\racine\\equipements\\{FQDN}\\procedures\\{procedure}", "r")
+        procedure = json.load(file)
+        file.close()
+        Log = []
+        Log.append(procedure["FQDN procedure"])
+        Log.append(procedure["Type"])
+        Log.append(procedure["Datetime"])
+        Log.append(procedure["Analyse"])
+        retourLogs.append(Log)
+    
+    #print(retourLogs)
+    os.chdir("E:\\Master2\\Semestre 9\\SupervisionProject\\racine")
+    return jsonify(retourlogs=retourLogs)
+
+@app.route('/logsequipement')
+def logsequipement():
+    return render_template('logsEquipement.html')
+
+@app.route('/retourlogsequipement')
+def retourlogsequipement():
+    FQDN = request.args.get('equipement','')
+    #print("infos relout logs")
+    os.chdir("E:\\Master2\\Semestre 9\\SupervisionProject\\racine\\logs")
+    #listeFichiersLogs = os.listdir("E:\\Master2\\Semestre 9\\SupervisionProject\\racine\\logs")
+    #listeFichiersLogs = [(os.stat(fname)[ST_CTIME], fname) for fname in os.listdir("E:\\Master2\\Semestre 9\\SupervisionProject\\racine\\logs") if os.path.isfile(fname)]
+    #print(listeFichiersLogs)
+    retourLogs = []
+    listeFichiersLogs = []
+
+    fichiers = []
+    for fichier in iglob("E:\\Master2\\Semestre 9\\SupervisionProject\\racine\\logs\\*.json"):
+        if os.path.isfile(fichier):
+            fichiers.append([fichier, os.path.getmtime(fichier)])
+    
+    fichiers.sort(key=lambda elem: elem[1], reverse=True) # tri par date avec date récente au début
+    #print(fichiers)
+    for i in range(len(fichiers)):
+        if FQDN in fichiers[i][0]:
+            listeFichiersLogs.append(fichiers[i][0])
+        
+    for i in listeFichiersLogs:
+        #print(i)
+        #file = open(f"E:\\Master2\\Semestre 9\\SupervisionProject\\racine\\logs\\{i}", "r")
+        file = open(f"{i}", "r")
+        #file = open(f"G:\\Master2\\Semestre 9\\SupervisionProject\\racine\\equipements\\{FQDN}\\procedures\\{procedure}", "r")
+        procedure = json.load(file)
+        file.close()
+        Log = []
+        Log.append(procedure["FQDN procedure"])
+        Log.append(procedure["Type"])
+        Log.append(procedure["Datetime"])
+        Log.append(procedure["Analyse"])
+        retourLogs.append(Log)
+    
+    #print(retourLogs)
+    os.chdir("E:\\Master2\\Semestre 9\\SupervisionProject\\racine")
+    return jsonify(retourlogs=retourLogs)
+
 @app.route('/test')
 def test():
     return render_template('test.html')
