@@ -1,0 +1,7 @@
+{
+    "FQDN" : "switch.snmp.test.trafic.eth4",
+    "OID" : "1.3.6.1.2.1.2.2.1.16.7",
+    "Frequence" : 2,
+    "Nbvaleurs" : 5,
+    "Unite" : "Octet"
+}

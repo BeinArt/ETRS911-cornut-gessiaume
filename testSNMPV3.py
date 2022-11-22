@@ -5,44 +5,73 @@ Created on Fri Nov 18 16:37:10 2022
 @author: armand
 """
 
-from twisted.internet.task import react
-from pysnmp.hlapi.v3arch.twisted import *
+from pysnmp.entity import engine, config
+from pysnmp.carrier.asyncore.dgram import udp
+from pysnmp.entity.rfc3413 import cmdgen
+import pysnmp.hlapi as pysnmp
 
+tmp = ''
 
-def success(args, reactor, snmpEngine):
-    errorStatus, errorIndex, varBindTable = args
+snmpEngine = engine.SnmpEngine()
 
-    if errorStatus:
-        print('%s: %s at %s' % (hostname,
-                                errorStatus.prettyPrint(),
-                                errorIndex and varBindTable[0][int(errorIndex) - 1][0] or '?'))
+config.addV3User(
+    snmpEngine, 'user1',
+    config.usmHMACSHAAuthProtocol, 'miracle2022',
+    config.usmAesCfb128Protocol, 'power2022'
+)
+
+config.addTargetParams(snmpEngine, 'controleur', 'user1', 'authPriv')
+config.addTransport(
+    snmpEngine,
+    udp.domainName,
+    udp.UdpSocketTransport().openClientMode()
+)
+
+config.addTargetAddr(
+    snmpEngine, 'equipement',
+    udp.domainName, ('192.168.140.140', 161),
+    'controleur'
+)
+
+data = pysnmp.ObjectType(pysnmp.ObjectIdentity("iso.3.6.1.2.1.2.2.1.16.10101"))
+
+def cbFun(snmpEngine, sendRequestHandle, errorIndication,
+          errorStatus, errorIndex, varBinds, cbCtx):
+    if errorIndication:
+        print(errorIndication)
+
+    elif errorStatus:
+        print('%s at %s' % (errorStatus.prettyPrint(),
+                            errorIndex and varBinds[int(errorIndex) - 1][0] or '?'))
 
     else:
-        for varBindRow in varBindTable:
-            for varBind in varBindRow:
-                print(' = '.join([x.prettyPrint() for x in varBind]))
+        for oid, val in varBinds:
+            print('%s = %s' % (oid.prettyPrint(), val.prettyPrint()))
+            print(valeur)
+            with open("tmp","w") as outfile:
+                outfile.write(val.prettyPrint())
+            outfile.close()
+          
+valeur = "Hello world"
+cmdgen.GetCommandGenerator().sendVarBinds(
+    snmpEngine,
+    'equipement',
+    None, '',
+    [([1, 3, 6, 1, 2, 1,2,2,1,16,10101], None)],
+    # valeur,
+    cbFun
+)
 
-        if not isEndOfMib(varBindTable[-1]):
-            return getbulk(reactor, snmpEngine, *varBindTable[-1])
+snmpEngine.transportDispatcher.runDispatcher()
 
+config.delTransport(
+    snmpEngine,
+    udp.domainName
+).closeTransport()
 
-def failure(errorIndication):
-    print(errorIndication)
+with open("tmp","r") as outfile:
+    tmp = outfile.readline()
+outfile.close()
 
-
-def getbulk(reactor, snmpEngine, varBinds):
-    deferred = bulkCmd(
-        snmpEngine,
-        UsmUserData('usr-none-none'),
-        UdpTransportTarget(('192.168.176.2', 161)),
-        ContextData(),
-        0, 50,
-        varBinds
-    )
-
-    deferred.addCallback(success, reactor, snmpEngine).addErrback(failure)
-
-    return deferred
-
-
-react(getbulk, [SnmpEngine(), ObjectType(ObjectIdentity('SNMPv2-MIB', 'system'))])
+print("tmp = "+tmp)
+print(int(tmp)+1)

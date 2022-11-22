@@ -8,7 +8,7 @@ import pysnmp as pysnmpdef
 import pysnmp.hlapi as pysnmp
 
 auth = pysnmp.CommunityData("passprojet",mpModel=1)
-data = pysnmp.ObjectType(pysnmp.ObjectIdentity("iso.org.dod.internet.mgmt.mib-2.2.2.1.16.10101"))
+data = pysnmp.ObjectType(pysnmp.ObjectIdentity("iso.org.dod.internet.mgmt.mib-2.2.2.1.16.7"))
 snmpEngine = pysnmp.SnmpEngine()
 for (errorIndication, errorStatus, errorIndex, varBinds) in pysnmp.getCmd(snmpEngine,
                                                                     auth,
@@ -23,3 +23,8 @@ for (errorIndication, errorStatus, errorIndex, varBinds) in pysnmp.getCmd(snmpEn
             res = str(val)
             print(oid,val)
             print(varBinds)
+            print(res)
+            
+print(res+" alors ?")
+print(int(res))
+print(int(res)+1)

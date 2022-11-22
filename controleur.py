@@ -13,9 +13,19 @@ import time
 import threading
 import subprocess
 import pysnmp.hlapi as pysnmp
+from pysnmp.entity import engine, config
+from pysnmp.carrier.asyncore.dgram import udp
+from pysnmp.entity.rfc3413 import cmdgen
 
 taches = {}
 PATH_equipement = "racine/equipements/"
+
+def GenerateOID(OID):
+    liste = []
+    split = OID.split(".")
+    for element in split:
+        liste.append(int(element))
+    return liste
 
 def FormatTime():
     now = datetime.datetime.now()
@@ -98,22 +108,82 @@ def testsnmp(adresse,procedure,connexion,chemin,status):
             time.sleep(procedure["Frequence"])
             if connexion["Version"] == "V2":
                 auth = pysnmp.CommunityData(connexion["Communaute"],mpModel=1)
+                snmpEngine = pysnmp.SnmpEngine()
+                data = pysnmp.ObjectType(pysnmp.ObjectIdentity(procedure["OID"]))
+                for (errorIndication, errorStatus, errorIndex, varBinds) in pysnmp.getCmd(snmpEngine,
+                                                                                    auth,
+                                                                                    pysnmp.UdpTransportTarget((adresse, 161)),
+                                                                                    pysnmp.ContextData(),
+                                                                                    data):
+                    if errorIndication or errorStatus:
+                        print(errorIndication or errorStatus)
+                        res = "0"
+                        break
+                    else:
+                        for oid,val in varBinds:
+                            if procedure["Unite"] != "String":
+                                res = str(val)
+                                res = int(res)
+                            else:
+                                res = str(val)
             elif connexion["Version"] == "V3":
-                auth = pysnmp.CommunityData(connexion["Communaute"]) # a faire en V3
-            data = pysnmp.ObjectType(pysnmp.ObjectIdentity("iso.org.dod.internet.mgmt.mib-2."+procedure["OID"]+".0"))
-            snmpEngine = pysnmp.SnmpEngine()
-            for (errorIndication, errorStatus, errorIndex, varBinds) in pysnmp.getCmd(snmpEngine,
-                                                                                auth,
-                                                                                pysnmp.UdpTransportTarget((adresse, 161)),
-                                                                                pysnmp.ContextData(),
-                                                                                data):
-                if errorIndication or errorStatus:
-                    print(errorIndication or errorStatus)
-                    res = "0"
-                    break
-                else:
-                    for oid,val in varBinds:
-                        res = str(val)
+                def cbFun(snmpEngine, sendRequestHandle, errorIndication,
+                          errorStatus, errorIndex, varBinds, cbCtx):
+                    if errorIndication:
+                        print(errorIndication)
+
+                    elif errorStatus:
+                        print('%s at %s' % (errorStatus.prettyPrint(),
+                                            errorIndex and varBinds[int(errorIndex) - 1][0] or '?'))
+
+                    else:
+                        for oid, val in varBinds:
+                            print('%s = %s' % (oid.prettyPrint(), val.prettyPrint()))
+                            with open('racine\tmp\\'+procedure["FQDN"],"w") as outfile:
+                                outfile.write(val.prettyPrint())
+                            outfile.close()
+                snmpEngine = engine.SnmpEngine()
+
+                config.addV3User(
+                    snmpEngine, connexion["User"],
+                    config.usmHMACSHAAuthProtocol, connexion["Password"],
+                    config.usmAesCfb128Protocol, connexion["Key"]
+                )
+
+                config.addTargetParams(snmpEngine, 'controleur', connexion["User"], 'authPriv')
+                config.addTransport(
+                    snmpEngine,
+                    udp.domainName,
+                    udp.UdpSocketTransport().openClientMode()
+                )
+
+                config.addTargetAddr(
+                    snmpEngine, 'equipement',
+                    udp.domainName, (adresse, 161),
+                    'controleur'
+                )
+                
+                cmdgen.GetCommandGenerator().sendVarBinds(
+                    snmpEngine,
+                    'equipement',
+                    None, '',
+                    [(GenerateOID(procedure["OID"]), None)],
+                    cbFun
+                )
+
+                snmpEngine.transportDispatcher.runDispatcher()
+
+                config.delTransport(
+                    snmpEngine,
+                    udp.domainName
+                ).closeTransport()
+                
+                with open('racine\tmp\\'+procedure["FQDN"],"r") as outfile:
+                    res = outfile.readline()
+                outfile.close()
+                
+                os.remove('racine\tmp\\'+procedure["FQDN"])
+            
             with open(chemin,"r") as outfile:
                 results = json.load(outfile)
             outfile.close()
@@ -144,6 +214,7 @@ def testsnmp(adresse,procedure,connexion,chemin,status):
                 # for oid, val in varBinds:
                 #     results["Result"].append([val,now])
             outfile.close()
+        print("Next call : "+chemin)
         return restart(chemin)
 
 def restart(tache):
@@ -230,23 +301,6 @@ def KillAll():
 
 initialisation()
 
-ControlLoadProc(5,1)
-
-time.sleep(10)
-
-KillTask("racine/equipements/switch.snmp.test/procedures/test-ping.json")
-
-time.sleep(4)
-
-KillAll()
-
-time.sleep(5)
-
-ControlLoadProc(5,1)
-
 time.sleep(10)
 
 KillAll()
-
-
-datetime.datetime()

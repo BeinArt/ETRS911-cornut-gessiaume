@@ -3,5 +3,6 @@
     "Version" : "V2",
     "Communaute" : "Communauté",
     "User" : "user",
-    "Password" : "password"
+    "Password" : "password",
+    "Key" : "key"
 }
