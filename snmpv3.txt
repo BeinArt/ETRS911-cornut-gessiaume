@@ -1,2 +1,10 @@
-interface instance SNMP V3 :
-10101 -> 10124
+OID a utilisé pour 192.168.176.2 (en octet) : 1.3.6.1.2.1.2.2.1.16.7 = eth4 outoctet
+
+OID a utilisé pour 192.168.140.140 (en octet) : 1.3.6.1.2.1.2.2.1.16.10101 = GigaEth1/0/1 out octet
+
+user : user1
+authkey : miracle2022
+privkey : power2022
+
+
+snmpget -v3 -l authPriv -u user1 -a SHA -A miracle2022 -x AES -X power2022 192.168.140.140 iso.3.6.1.2.1.2.2.1.16.10101
