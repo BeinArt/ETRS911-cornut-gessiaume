@@ -7,15 +7,18 @@
     <meta name="Description" content="Description du site" />
     <meta name="author" content="JB" />
     <!-- CSS only -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
     <!--icone-->
     <link rel="icon" type="image/png" href="https://www.assurcyber.com/images/icone_rgsupervision.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w==" crossorigin="anonymous" referrerpolicy="no-referrer"
+    />
 </head>
 
-<body>
+<body style="background-color: #f1f6f8;">
     <!--<h1>DashBoard</h1>-->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <input class="navbar-brand" type="image" id="image" alt="Login" style="height: 2%; width: 2%;" src="https://www.assurcyber.com/images/icone_rgsupervision.png">
@@ -32,23 +35,69 @@
             </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                         <a id="ajout" class="dropdown-item" href="http://localhost:5000/ajout">Ajouter un équipement</a>
-                        <a id="modif" class="dropdown-item" href="http://localhost:5000/infoSuppression">Supprimer un équipement</a>
-                        <a id="suppr" class="dropdown-item" href="#">Modifier un équipement</a>
+                        <a id="modif" class="dropdown-item" href="http://localhost:5000/suppression">Supprimer un équipement</a>
+                        <a id="suppr" class="dropdown-item" href="http://localhost:5000/modifier">Modifier un équipement</a>
                     </div>
                 </li>
-
+                
+                <!--<li class="nav-item active">
+                    <a class="nav-link btn btn-success" href="http://localhost:5000/start">Start <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link btn btn-warning" href="http://localhost:5000/restart">Restart <span class="sr-only">(current)</span></a>
+                </li>  
+                <li class="nav-item active">
+                    <a class="nav-link btn btn-danger" href="http://localhost:5000/stop">Stop <span class="sr-only">(current)</span></a>
+                </li>-->
+            </ul>
+            
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active" style="margin-right: 3%; margin-left: 10%;">
+                    <a class="nav-link btn btn-success" href="http://localhost:5000/start">Start <span class="sr-only">(current)</span></a>
+                </li>
+                
+                <li class="nav-item active" style="margin-right: 3%; margin-left: 3%;">
+                    <a class="nav-link btn btn-warning" href="http://localhost:5000/restart">Restart <span class="sr-only">(current)</span></a>
+                </li>  
+                
+                <li class="nav-item active" style="margin-right: 3%; margin-left: 3%;">
+                    <a class="nav-link btn btn-danger" href="http://localhost:5000/stop">Stop <span class="sr-only">(current)</span></a>
+                </li>
             </ul>
 
+            <span style="margin-right: 2%" class="navbar-brand">
+                Equipements :
+                <div id="nbEquipements" style="margin-right: 2%" class="navbar-text">
+                    
+                  </div>
+                  <div class="navbar-text">/</div>
+                  <div id="nbUp" style="margin: 0.5%;color:green;" class="navbar-text">
+                    
+                  </div>
+                  <div class="navbar-text">/</div>
+                  <div id="nbDown" style="margin: 0.5%;margin-right: 1%; color:red;" class="navbar-text">
+                    
+                  </div>
+            </span>
+            <span class="navbar-brand">
+                Services supervisés :
+                <div id="nbServices" style="margin-right: 2%" class="navbar-text">
+                    
+                  </div>
+              </span>
         </div>
     </nav>
+
     <div style="height:100%; width:98%; display:flex; margin:1%;">
-        <div id="Mon_id" style="width:50%;"></div>
-        
-        <iframe name="moniframe" style="float: right;height:700px; width:48%;" width="40%" height="100%" src="http://localhost:5000/logsdashboard" frameborder="0" scrolling="yes">
-        </iframe> 
+        <div id="Mon_id" style="width:50%;">
+
+        </div>
+
+        <iframe name="moniframe" style="float: right;height:775px; width:48%;border: solid;border-color: black;" width="40%" height="100%" src="http://localhost:5000/logsdashboard" frameborder="0" scrolling="yes">
+        </iframe>
     </div>
     <script src="{{ url_for('static', filename='jquery.js') }}"></script>
-    
+
     <script>
         setInterval(function() {
             //alert($SCRIPT_ROOT)
@@ -56,64 +105,133 @@
             $.getJSON(flickerAPI, {})
                 .done(function(data) {
                     //$.getJSON($SCRIPT_ROOT + '/returnList', function(data) {
-                    document.getElementById('Mon_id').innerHTML = "<div id='Mon_id'></div>";
-
+                    document.getElementById('Mon_id').innerHTML = "<table id='Mon_id2'></table>";
+                    document.getElementById('Mon_id').style.margin = "1%";
+                    document.getElementById('Mon_id').style.marginRight = "2.5%";
                     //alert(data.result.length);
                     //alert(data.result);
                     //alert(data.resultPing);
                     let listOfProducts;
                     //alert(data.result[2]);
-                    const Mon_id = document.getElementById("Mon_id");
-
-                    // Solution 1 : création p label input : createElement + appendChild
+                    const Mon_id = document.getElementById("Mon_id2");
+                    Mon_id.style.margin = "2%";
+                    Mon_id.style.marginLeft = "0.5%";
+                    Mon_id.style.marginTop = "0%";
+                    Mon_id.style.width = "100%"
+                        // Solution 1 : création p label input : createElement + appendChild
                     longueur = data.result.length;
                     var entreeListe = 0;
+                    document.getElementById("nbEquipements").textContent = data.resultnbequipements + " Totals";
+                    document.getElementById("nbUp").textContent = data.resultnbup + " Up";
+                    document.getElementById("nbDown").textContent = data.resultnbdown + " Down";
+                    document.getElementById("nbServices").textContent = data.resultnbServices;
+
+                    let titrebalise1 = document.createElement("tr");
+                    var titrenomEquipement = document.createElement("th");
+                    var titrestatus = document.createElement("th");
+                    titrestatus.style.textAlign = "center";
+                    var titrenomIP = document.createElement("th");
+                    var titrecommentaire = document.createElement("th");
+                    
+                    titrebalise1.style.backgroundColor = "#D3D3D3";
+                    
+                    titrenomEquipement.textContent = "Nom";
+                    titrestatus.textContent = "Status";
+                    titrenomIP.textContent = "IP";
+                    titrecommentaire.textContent = "Commentaire";
+
+                    titrebalise1.appendChild(titrenomEquipement);
+                    titrebalise1.appendChild(titrestatus);
+                    titrebalise1.appendChild(titrenomIP);
+                    titrebalise1.appendChild(titrecommentaire);
+
+                    //titrenomEquipement.style.margin = "0.5%";
+                    //titrenomEquipement.style.marginRight = "2%";
+                    //titrestatus.style.margin = "1%";
+                    titrenomIP.style.textAlign = "center";
+                    Mon_id.appendChild(titrebalise1);
                     //creation d'une liste avec le nom des equipements
                     for (let pas = 0; pas < longueur; pas++) {
-                        let balise1 = document.createElement("div");
+                        /*let balise1 = document.createElement("div");
                         let nomEquipement = document.createElement("a");
-                        let status = document.createElement("div");
+                        let status = document.createElement("div");*/
+                        let balise1 = document.createElement("tr");
+                        let nomEquipement2 = document.createElement("td");
+                        let nomEquipement = document.createElement("a");
+                        let status = document.createElement("td");
+                        status.style.textAlign = "center";
+                        let badge = document.createElement("span");
+                        let agradissement = document.createElement("h4");
+
+                        status.appendChild(agradissement);
+                        agradissement.appendChild(badge);
+
                         balise1.style.marginTop = '1.5%';
                         balise1.style.marginBottom = '1.5%';
+                        balise1.style.height = '50px';
 
-
+                        var test = pas % 2;
+                        if (test != 0) {
+                            balise1.style.backgroundColor = "#D3D3D3";
+                            nomEquipement.style.backgroundColor = "#D3D3D3";
+                        }
                         Mon_id.appendChild(balise1);
 
-                        balise1.appendChild(nomEquipement);
+                        nomEquipement2.appendChild(nomEquipement);
+                        balise1.appendChild(nomEquipement2);
                         balise1.appendChild(status);
 
 
-                        nomEquipement.style.display = 'inline-block';
+                        //nomEquipement.style.display = 'inline-block';
                         nomEquipement.style.marginLeft = '1%';
-                        nomEquipement.className = "btn btn-light";
+                        //nomEquipement.className = "btn btn-light";
 
                         nomEquipement.textContent = data.result[pas];
                         nomEquipement.href = "/detail?equipement=" + data.result[pas];
+                        nomEquipement.style.color = "black";
+                        nomEquipement2.style.verticalAlign = "middle";
+                        nomEquipement.style.verticalAlign = "middle";
+                        //nomEquipement.onclick = "Equipement('" + data.result[pas] + "')";
 
                         //si dans la liste au meme niveau du nom de l'equipement il y a une infos de ping
                         if (data.resultPing[pas] == "0" || data.resultPing[pas] == "") {
-                            status.textContent = "Status : NOK";
-                            status.className = "btn btn-danger";
+                            //status.textContent = "Down";
+                            badge.textContent = "Down";
+                            //status.className = "btn btn-danger";
+                            //status.style.backgroundColor = "#de3535";
+                            //status.style.color = "white";
+                            badge.className = "badge badge-pill badge-danger";
                         } else {
-                            status.textContent = "Status : OK";
-                            status.className = "btn btn-success";
+                            //status.textContent = "Up";
+                            badge.textContent = "Up";
+                            badge.className = "badge badge-pill badge-success";
+                            //status.className = "btn btn-success";
+                            //status.style.backgroundColor = "#0ed206";
                         };
-                        status.style.display = 'inline-block';
+                        /*status.style.fontWeight = "bold";
+                        status.style.padding = '0.5%';
+                        var taille = status.style.height;
+                        taille = taille / 2;
+                        status.style.width = taille;
+                        status.style.borderRadius = "50%";
+                        status.style.textAlign = "center";*/
+                        //status.style.display = 'inline-block';
 
-                        status.style.marginLeft = '5%';
+                        //status.style.marginLeft = '1%';
 
-                        let IP = document.createElement("div");
+                        //let IP = document.createElement("div");
+                        let IP = document.createElement("td");
                         IP.textContent = "";
-                        IP.style.display = 'inline-block';
-                        IP.style.paddingLeft = '5%';
+                        //IP.style.display = 'inline-block';
+                        //IP.style.paddingLeft = '5%';
                         balise1.appendChild(IP);
                         if (data.TouteIP[pas] != "None") {
 
-                            IP.textContent = "IP : " + data.TouteIP[pas];
+                            IP.textContent = data.TouteIP[pas];
 
                         };
-
-                        let cpu = document.createElement("div");
+                        IP.style.textAlign = "center";
+                        /*let cpu = document.createElement("div");
                         cpu.textContent = "";
                         cpu.style.display = 'inline-block';
                         cpu.style.paddingLeft = '5%';
@@ -124,10 +242,21 @@
                             cpu.textContent = "CPU : " + data.resultCPU[pas] + "%";
                             //cpu.style.display='inline-block';
                             //cpu.style.paddingLeft='5%';
+                        };*/
+                        //let logs = document.createElement("div");
+                        let logs = document.createElement("td");
+                        logs.textContent = "";
+                        //logs.style.display = 'inline-block';
+                        //logs.style.paddingLeft = '5%';
+                        balise1.appendChild(logs);
+                        if (data.resultLogs[pas] != "None" && data.resultLogs[pas] != []) {
+
+                            //alert(data.resultLogs[pas])
+                            logs.textContent = data.resultLogs[pas];
+
                         };
 
-
-                        let ram = document.createElement("div");
+                        /*let ram = document.createElement("div");
                         ram.textContent = "";
                         ram.style.display = 'inline-block';
                         ram.style.paddingLeft = '5%';
@@ -136,7 +265,7 @@
 
                             ram.textContent = "RAM : " + data.resultRAM[pas] + data.uniteRAM[pas];
 
-                        };
+                        };*/
                     };
 
                 });

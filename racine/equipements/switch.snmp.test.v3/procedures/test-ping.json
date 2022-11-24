@@ -1,5 +1,5 @@
 {
-    "FQDN procedure" : "switch.snmp.test.v2.test-ping",
+    "FQDN procedure" : "switch.snmp.test.test-ping",
     "Frequence" : 1,
     "Nb valeurs" : 1,
     "Unite" : "Bool"

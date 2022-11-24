@@ -5,6 +5,7 @@ Created on Fri Nov 18 16:37:10 2022
 @author: armand
 """
 
+import os
 from pysnmp.entity import engine, config
 from pysnmp.carrier.asyncore.dgram import udp
 from pysnmp.entity.rfc3413 import cmdgen
@@ -72,6 +73,7 @@ config.delTransport(
 with open("tmp","r") as outfile:
     tmp = outfile.readline()
 outfile.close()
+os.remove("tmp")
 
 print("tmp = "+tmp)
 print(int(tmp)+1)

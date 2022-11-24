@@ -42,27 +42,46 @@
     <form id="formulaire" action="/actionSuppression" method="get" style="margin: 1%">
         <div id="ListeEquipements"></div>
         <br></br>
-        <button id="envoie_form" class="btn btn-primary" type="submit" onclick="verif()">Supprimer</button>
+        <button id="envoie_form" class="btn btn-primary" type="submit">Supprimer</button>
     </form>
+    <script src="{{ url_for('static', filename='jquery.js') }}"></script>
     <script type="text/javascript">
-        function verif() {
-            var supprEquipement = document.getElementById("EquipementSuppr").value
-            var answer = confirm("Supprimer " + supprEquipement + " ?");
-            alert("reponse est " + answer);
-            if (answer == true) {
+        var flickerAPI = 'http://localhost:5000/returnEquipement';
+        $.getJSON(flickerAPI, {})
+            .done(function(data) {
 
-            } else {
+                let liste_equipements = data.equipements
+                longueur = data.equipements.length;
+                var entreeListe = 0;
+                //creation d'une liste avec le nom des equipements
 
-                event.preventDefault;
-            }
-        }
+                var select = document.createElement("select");
+                select.name = "EquipementSuppr";
+                select.id = "EquipementSuppr"
+
+                for (let pas = 0; pas < longueur; pas++) {
+
+                    var option = document.createElement("option");
+                    option.value = liste_equipements[pas];
+                    option.text = liste_equipements[pas];
+                    select.appendChild(option);
+
+                }
+                var label = document.createElement("label");
+                label.innerHTML = "Choisir un equipement à supprimer: "
+                label.htmlFor = "equipement";
+
+                document.getElementById("ListeEquipements").appendChild(label).appendChild(select);
+            });
+
+        /*    
         var str = window.location.href;
         var url = new URL(str);
         //alert(url);
         let equipement = [];
         var search_params = new URLSearchParams(url.search);
         //alert(search_params)
-        search_params.forEach((value, key) => {
+        /*search_params.forEach((value, key) => {
             var verif = key.indexOf("Equipement")
             if (verif !== -1) {
                 equipement.push(value);
@@ -85,7 +104,7 @@
         label.innerHTML = "Choisir un equipement à supprimer: "
         label.htmlFor = "equipement";
 
-        document.getElementById("ListeEquipements").appendChild(label).appendChild(select);
+        document.getElementById("ListeEquipements").appendChild(label).appendChild(select);*/
     </script>
 
 </body>

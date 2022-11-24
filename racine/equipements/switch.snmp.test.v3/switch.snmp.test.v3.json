@@ -1,9 +1,9 @@
 {
-    "FQDN" : "switch.snmp.test.v2",
-    "NomAffichage" : "switch test snmpV2",
+    "FQDN" : "switch.snmp.test.v3",
+    "NomAffichage" : "switch test snmpV3",
     "Marque" : "",
     "Modele" : "",
-    "IP" : "192.168.176.2",
+    "IP" : "192.168.140.140",
     "Client" : "USMB",
     "OS" : "",
     "Localisation" : "Baie principale",

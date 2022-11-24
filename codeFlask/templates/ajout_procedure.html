@@ -7,12 +7,15 @@
     <meta name="Description" content="Description du site" />
     <meta name="author" content="JB" />
     <!-- CSS only -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <!--icone-->
     <link rel="icon" type="image/png" href="https://www.assurcyber.com/images/icone_rgsupervision.png">
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w==" crossorigin="anonymous" referrerpolicy="no-referrer"
+    />
 </head>
 
 <body>
@@ -42,9 +45,18 @@
 
     <form id="formulaire" action="/actionAjoutProcedure" method="get">
         <input type="hidden" id="FQDN" name="equipement" value="" readOnly="readOnly" />
-        <div class="OID">
-            <label>OID :  </label>
-            <input type="text" name="OID">
+        <div id="OIDSelection" class="OID" style="display:inline-flex; margin:0.3%;width:98%">
+            <select class="form-select" name="OID" aria-label="Default select example">
+                <option id="selected" selected>Choisir un OID</option>
+                <option name="OID" value="1.3.6.1.4.1.9.9.109.1.1.1.1.24" onclick="OID('1.3.6.1.4.1.9.9.109.1.1.1.1.24')">1.3.6.1.4.1.9.9.109.1.1.1.1.24</option>
+                <option name="OID" value="1.3.6.1.4.1.9.9.221.1.1.1.1.18" onclick="OID('1.3.6.1.4.1.9.9.221.1.1.1.1.18')">1.3.6.1.4.1.9.9.221.1.1.1.1.18</option>
+                <option name="OID" value="1.3.6.1.2.1.2.2.1.10" onclick="OID('1.3.6.1.2.1.2.2.1.10')">1.3.6.1.2.1.2.2.1.10</option>
+                <option name="OID" value="1.3.6.1.2.1.2.2.1.16" onclick="OID('1.3.6.1.2.1.2.2.1.16')">1.3.6.1.2.1.2.2.1.16</option>
+              </select>
+            <br></br>
+
+              <!--<label>OID :  </label>
+            <input type="text" name="OID">-->
         </div>
 
         <div class="frequence">
@@ -77,6 +89,38 @@
         };
 
         document.getElementById('retour').href = "/detail?equipement=" + equipement;
+        
+        var dicoOIDConnu = {
+        '1.3.6.1.4.1.9.9.109.1.1.1.1.24': ['cpu','iso. org. dod. internet. private. enterprises. cisco. ciscoMgmt. ciscoProcessMIB. ciscoProcessMIBObjects. cpmCPU. cpmCPUTotalTable. cpmCPUTotalEntry. cpmCPULoadAvg1min'],
+        '1.3.6.1.4.1.9.9.221.1.1.1.1.18': ['ram','iso. org. dod. internet. private. enterprises. cisco. ciscoMgmt. ciscoEnhancedMemPoolMIB. cempMIBObjects. cempMemPool. cempMemPoolTable. cempMemPoolEntry. cempMemPoolHCUsed'],
+        '1.3.6.1.2.1.2.2.1.10': ['nb octet entrant','iso. org. dod. internet. mgmt. mib-2. interfaces. ifTable. ifEntry. ifInOctets'], 
+        '1.3.6.1.2.1.2.2.1.16': ['nb octet sortant','iso. org. dod. internet. mgmt. mib-2. interfaces. ifTable. ifEntry. ifOutOctets'] 
+        }
+        function OID(OIDChoisi){
+            var check = document.getElementById("nomChoisi");
+            if(check != null){
+                check.parentNode.removeChild(check);
+            }
+            //alert(dicoOIDConnu[OIDChoisi])
+            var nomOID = document.createElement("div");
+            nomOID.id = "nomChoisi";
+            const parent = document.getElementById("OIDSelection");
+            parent.appendChild(nomOID);
+            nomOID.textContent = "| " + dicoOIDConnu[OIDChoisi][0] + " |";
+            nomOID.style.margin = "0.2%";
+
+            var check2 = document.getElementById("nomChoisiComplet");
+            if(check2 != null){
+                check2.parentNode.removeChild(check2);
+            }
+            //alert(dicoOIDConnu[OIDChoisi])
+            var nomOID2 = document.createElement("div");
+            nomOID2.id = "nomChoisiComplet";
+            
+            parent.appendChild(nomOID2);
+            nomOID2.textContent = dicoOIDConnu[OIDChoisi][1] + " |";
+            nomOID2.style.margin = "0.2%";
+        }
     </script>
 
 </body>

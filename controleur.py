@@ -7,6 +7,7 @@ Created on Fri Sep 16 16:36:47 2022
 
 import json
 import os
+import socket
 import platform
 import datetime
 import time
@@ -117,7 +118,7 @@ def testsnmp(adresse,procedure,connexion,chemin,status):
                                                                                     data):
                     if errorIndication or errorStatus:
                         print(errorIndication or errorStatus)
-                        res = "0"
+                        res = 0
                         break
                     else:
                         for oid,val in varBinds:
@@ -131,15 +132,13 @@ def testsnmp(adresse,procedure,connexion,chemin,status):
                           errorStatus, errorIndex, varBinds, cbCtx):
                     if errorIndication:
                         print(errorIndication)
-
                     elif errorStatus:
                         print('%s at %s' % (errorStatus.prettyPrint(),
                                             errorIndex and varBinds[int(errorIndex) - 1][0] or '?'))
 
                     else:
                         for oid, val in varBinds:
-                            print('%s = %s' % (oid.prettyPrint(), val.prettyPrint()))
-                            with open('racine\tmp\\'+procedure["FQDN"],"w") as outfile:
+                            with open(procedure["FQDN"],"w") as outfile:
                                 outfile.write(val.prettyPrint())
                             outfile.close()
                 snmpEngine = engine.SnmpEngine()
@@ -178,11 +177,11 @@ def testsnmp(adresse,procedure,connexion,chemin,status):
                     udp.domainName
                 ).closeTransport()
                 
-                with open('racine\tmp\\'+procedure["FQDN"],"r") as outfile:
+                with open(procedure["FQDN"],"r") as outfile:
                     res = outfile.readline()
                 outfile.close()
                 
-                os.remove('racine\tmp\\'+procedure["FQDN"])
+                os.remove(procedure["FQDN"])
             
             with open(chemin,"r") as outfile:
                 results = json.load(outfile)
@@ -249,6 +248,7 @@ def garbage(tache):
 def LoadProc(secondes,status):
     if status != 1:
         print("Process killed : Load process")
+        taches.pop("LoadProcess")
     else:
         time.sleep(secondes)
         liste_equipements = os.listdir(PATH_equipement)
@@ -261,7 +261,7 @@ def LoadProc(secondes,status):
                     with open(PATH_equipement+equipement+"/procedures/connexion.json","r") as file_connexion:
                         connexion = json.load(file_connexion)
                     file_connexion.close()
-                elif procedure == "test-ping.json" and PATH_equipement+equipement+"/procedures/"+procedure not in taches:
+                elif procedure == "test-ping.json" and (PATH_equipement+equipement+"/procedures/"+procedure not in taches or taches[PATH_equipement+equipement+"/procedures/"+procedure] == 0):
                     with open(PATH_equipement+equipement+"/procedures/test-ping.json","r") as file_testping:
                         test_ping = json.load(file_testping)
                     file_testping.close()
@@ -269,7 +269,7 @@ def LoadProc(secondes,status):
                     new_thread = threading.Thread(target=testping,args=(adresse_ip,test_ping,PATH_equipement+equipement+"/resultats/test-ping.json",taches[PATH_equipement+equipement+"/procedures/test-ping.json"]))
                     new_thread.start()
                     print("Starting : "+PATH_equipement+equipement+"/procedures/"+procedure)
-                elif PATH_equipement+equipement+"/procedures/"+procedure not in taches:
+                elif PATH_equipement+equipement+"/procedures/"+procedure not in taches or taches[PATH_equipement+equipement+"/procedures/"+procedure] == 0:
                     with open(PATH_equipement+equipement+"/procedures/"+procedure,"r") as file_proceduresnmp:
                         test_snmp = json.load(file_proceduresnmp)
                     file_proceduresnmp.close()
@@ -277,18 +277,19 @@ def LoadProc(secondes,status):
                     new_thread = threading.Thread(target=testsnmp,args=(adresse_ip,test_snmp,connexion,PATH_equipement+equipement+"/resultats/"+procedure,taches[PATH_equipement+equipement+"/procedures/"+procedure]))
                     new_thread.start()
                     print("Starting : "+PATH_equipement+equipement+"/procedures/"+procedure)
-        return ControlLoadProc(secondes, taches["LoadProcess"])
+        print("Next call : LoadProcess")
+        return LoadProc(secondes, taches["LoadProcess"])
                     
 def ControlLoadProc(secondes,status):
     if status == 1:
-        if "LoadProcess" not in taches:
+        if "LoadProcess" not in taches or taches["LoadProcess"] == 0:
             print("Starting : Loading process")
             taches["LoadProcess"] = status
+            new_thread = threading.Thread(target=LoadProc,args=(secondes,status))
+            new_thread.start()
     elif status == 0:
         print("Killing : Loading process")
-        taches.pop("LoadProcess")
-    new_thread = threading.Thread(target=LoadProc,args=(5,status))
-    new_thread.start()
+        taches["LoadProcess"] = status
     
 def KillTask(key):
         taches[key] = 0
@@ -298,9 +299,35 @@ def KillAll():
     for element in taches:
         print("Killing : "+element)
         taches[element] = 0
+        
+def CommandCenter():
+    serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    serversocket.bind(('0.0.0.0', 8089))
+    serversocket.listen(5) # become a server socket, maximum 5 connections
+    while True:
+        connection, address = serversocket.accept()
+        buf = connection.recv(64)
+        if len(buf) > 0:
+            decode = buf.decode(encoding='utf-8')
+            print(decode)
+            if decode == "Restart":
+                for i in range(0,5):
+                    KillAll()
+                    time.sleep(1)
+                ControlLoadProc(5, 1)
+            elif decode == "Stop":
+                for i in range(0,5):
+                    KillAll()
+                    time.sleep(1)
+            elif decode == "Start":
+                ControlLoadProc(5, 1)
+            split = decode.split("@")
+            if split[0] == "Reload":
+                for procedure in os.listdir(PATH_equipement+split[1]+"/procedures/"):
+                    if procedure != "connexion.json":
+                        KillTask(PATH_equipement+split[1]+"/procedures/"+procedure)
 
-initialisation()
-
-time.sleep(10)
-
-KillAll()
+# initialisation()
+ControlLoadProc(5, 1)
+new_thread = threading.Thread(target=CommandCenter)
+new_thread.start()

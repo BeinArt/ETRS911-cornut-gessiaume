@@ -16,22 +16,22 @@
 </head>
 
 <body style="display:inline-block;width:100%">
-   
-<div id="ensembleLogs" >
-    <div style="display: flex;">
-        <div id="Mon_id">1</div>
-        <div id="Mon_id">2</div>
-        <div id="Mon_id">3</div>
-        <div id="Mon_id">4</div>
+
+    <div id="ensembleLogs">
+        <div style="display: flex;">
+            <div id="Mon_id">1</div>
+            <div id="Mon_id">2</div>
+            <div id="Mon_id">3</div>
+            <div id="Mon_id">4</div>
+        </div>
+
+        <div style="display: flex;">
+            <div id="Mon_id">1</div>
+            <div id="Mon_id">2</div>
+            <div id="Mon_id">3</div>
+            <div id="Mon_id">4</div>
+        </div>
     </div>
-    
-    <div style="display: flex;">
-        <div id="Mon_id">1</div>
-        <div id="Mon_id">2</div>
-        <div id="Mon_id">3</div>
-        <div id="Mon_id">4</div>
-    </div>
-</div>
     <script src="{{ url_for('static', filename='jquery.js') }}"></script>
     <script>
         var url = window.location.href;
@@ -39,8 +39,8 @@
         var equipement = url.searchParams.get("equipement");
         if (equipement != null) {
             //document.getElementById('titre').innerText = equipement;
-        
-        
+
+
             var flickerAPI = 'http://localhost:5000/retourlogsequipement?equipement=' + equipement;
             $.getJSON(flickerAPI, {})
                 .done(function(data) {
@@ -59,7 +59,7 @@
                     var titrelogEntier = document.createElement("tr");
                     titrelogEntier.id = "logEntier";
 
-                        
+                    titrelogEntier.style.backgroundColor = "#D3D3D3";
 
                     var titreFQDN = document.createElement("th");
                     var titretype = document.createElement("th");
@@ -70,13 +70,13 @@
                     titretype.style = "margin-right:2%";
                     titreDate.style = "margin-right:2%";
                     titrecommentaire.style = "margin-right:2%";*/
-                        
-                        
+
+
                     titrelogEntier.appendChild(titreFQDN);
                     titrelogEntier.appendChild(titretype);
                     titrelogEntier.appendChild(titreDate);
                     titrelogEntier.appendChild(titrecommentaire);
-                        
+
                     //titrelogEntier.style = "display:flex;"
 
                     titreFQDN.textContent = "Nom";
@@ -89,29 +89,48 @@
 
                         let logEntier = document.createElement("tr");
                         logEntier.id = "logEntier";
+                        var test = pas % 2;
+                        if (test != 0) {
+                            logEntier.style.backgroundColor = "#D3D3D3";
+                        }
 
-                        
 
                         let FQDN = document.createElement("td");
                         let type = document.createElement("td");
                         let Date = document.createElement("td");
                         let commentaire = document.createElement("td");
+                        let badge = document.createElement("span");
+                        let agradissement = document.createElement("h5");
+                        type.appendChild(agradissement);
+                        agradissement.appendChild(badge);
 
                         /*FQDN.style = "margin-right:2%";
                         type.style = "margin-right:2%";
                         Date.style = "margin-right:2%";
                         commentaire.style = "margin-right:2%";*/
-                        
-                        
+
+
                         logEntier.appendChild(FQDN);
                         logEntier.appendChild(type);
                         logEntier.appendChild(Date);
                         logEntier.appendChild(commentaire);
-                        
-                        //logEntier.style = "display:flex;"
+
+                        if (liste_logs[pas][1] == "Info" || liste_logs[pas][1] == "info") {
+                            //type.className = "btn btn-primary";
+                            badge.className = "badge badge-pill badge-primary";
+                        } else if (liste_logs[pas][1] == "Critique" || liste_logs[pas][1] == "Critical") {
+                            //type.className = "btn btn-danger";
+                            badge.className = "badge badge-pill badge-danger";
+                        } else if (liste_logs[pas][1] == "Alert" || liste_logs[pas][1] == "alert") {
+                            //type.className = "btn btn-warning";
+                            badge.className = "badge badge-pill badge-warning";
+                        }
+                        FQDN.style.padding = "0.2%;"
+                            //logEntier.style = "display:flex;"
 
                         FQDN.textContent = liste_logs[pas][0];
-                        type.textContent = liste_logs[pas][1];
+                        //type.textContent = liste_logs[pas][1];
+                        badge.textContent = liste_logs[pas][1];
                         Date.textContent = liste_logs[pas][2];
                         commentaire.textContent = liste_logs[pas][3];
 
@@ -119,8 +138,7 @@
 
                     }
                 });
-            };
-                
+        };
     </script>
 </body>
 

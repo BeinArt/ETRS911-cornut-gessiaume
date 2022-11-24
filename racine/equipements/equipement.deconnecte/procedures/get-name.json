@@ -1,7 +1,0 @@
-{
-    "FQDN" : "equipement.deconnecte.get-name",
-    "OID" : "system.sysDescr",
-    "Frequence" : 2,
-    "Nbvaleurs" : 5,
-    "Unite" : "String"
-}
