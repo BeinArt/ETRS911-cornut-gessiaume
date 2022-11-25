@@ -38,45 +38,63 @@
             </form>
         </div>
     </nav>
-    <form id="formulaire" action="/actionModifProcedure" method="get">
+    <form id="formulaire" action="/actionModifProcedure" method="get" style="width:30%;margin:0.5%;">
         <input type="hidden" id="FQDN" name="equipement" value="" readOnly="readOnly" />
         <input type="hidden" id="nom" name="nom" value="" readOnly="readOnly" />
         <label for="procedure">Choisir une procédure :</label>
         <select id="procedure" onchange="getOption(this)">
             <option>--Please choose an option--</option>
         </select>
-        <div class="OID">
+        <div class="form-group" id='user_case'>
+            <label>OID :  </label>
+            <input id="OID" name="OID" type="text" class="form-control" placeholder="Entrer l'OID">
+        </div>
+        <!--<div class="OID">
             <label>OID :  </label>
             <input type="text" readOnly="readOnly" id="OID" name="OID">
-        </div>
+        </div>-->
 
-        <div class="frequence">
+        <div class="form-group" id='user_case'>
+            <label>Fréquence :  </label>
+            <input id="frequence" name="frequence" type="text" class="form-control" placeholder="Entrer la fréquences des requêtes">
+            <small id="emailHelp" class="form-text text-muted">Entrer la fréquece des requêtes en secondes.</small>
+        </div>
+        <!--<div class="frequence">
             <label>Frequence des requêtes :  </label>
             <input type="text" id="frequence" name="frequence">
-        </div>
+        </div>-->
 
-        <div class="Communaute">
+        <div class="form-group" id='user_case'>
+            <label>Nombre de valeur :  </label>
+            <input id="valeur" name="valeur" type="text" class="form-control" placeholder="Entrer le nombre de valeur à conserver">
+            <small id="emailHelp" class="form-text text-muted">Entrer le nombre de valeur à conserver.</small>
+        </div>
+        <!--<div class="Communaute">
             <label>Nombre de valeur a conserver :  </label>
             <input type="text" id="valeur" name="valeur">
-        </div>
+        </div>-->
 
-        <div class="Unite">
+        <div class="form-group" id='user_case'>
+            <label>Unité :  </label>
+            <input id="unite" name="Unite" type="text" class="form-control" placeholder="Entrer l'unité">
+            <small id="emailHelp" class="form-text text-muted">Entrer l'unité des valeurs souhaité.</small>
+        </div>
+        <!--<div class="Unite">
             <label>Unité :  </label>
             <input type="text" id="unite" name="Unite">
-        </div>
+        </div>-->
 
         <button id="envoie_form" class="btn btn-primary" type="submit">Envoyer</button>
     </form>
-
-    <a id="retour" class="btn btn-primary" href="/">Retour</a>
+    <a id="retour" class="btn btn-primary" href="/" style="margin-left:0.5%">Retour</a>
     <script src="{{ url_for('static', filename='jquery.js') }}"></script>
     <!--<script>
-        $SCRIPT_ROOT = {
-            {
-                request.script_root | tojson
-            }
-        };
-    </script>-->
+            $SCRIPT_ROOT = {
+                {
+                    request.script_root | tojson
+                }
+            };
+        </script>-->
     <script type="text/javascript">
         function getOption(el) {
             const option = el.value;
@@ -84,28 +102,42 @@
             var url = window.location.href;
             var url = new URL(url);
             var equipement = url.searchParams.get("equipement");
-            //alert($SCRIPT_ROOT + '/retourProcedure?equipement=' + equipement + '&procedure=' + el.value);
-            $.getJSON('http://localhost:5000/retourProcedure?equipement=' + equipement + '&procedure=' + el.value, {}, function(data) {
-                    console.log(data);
-                    //alert(data.OID);
-                    document.getElementById("nom").value = el.value;
-                    document.getElementById("OID").value = data.OID;
-                    document.getElementById("frequence").value = data.Frequence;
-                    document.getElementById("valeur").value = data.Nbvaleurs;
-                    document.getElementById("unite").value = data.Unite;
+            titre = document.getElementById("titre");
+            if (el.value == "--Please choose an option--") {
+                titre.textContent = "Modifier procédure";
+                document.getElementById("nom").value = "";
+                document.getElementById("OID").value = "";
+                document.getElementById("frequence").value = "";
+                document.getElementById("valeur").value = "";
+                document.getElementById("unite").value = "";
+            } else {
+                titre.textContent = "Modification " + el.value;
 
-                })
-                .fail(function(data) {
-                    //alert( "error" );
-                    document.getElementById("OID").value = "";
-                    document.getElementById("frequence").value = "";
-                    document.getElementById("valeur").value = "";
-                    document.getElementById("unite").value = "";
-                })
-                .always(function(data) {
-                    //alert( "finished" );
-                });
+                //alert($SCRIPT_ROOT + '/retourProcedure?equipement=' + equipement + '&procedure=' + el.value);
+                $.getJSON('http://192.168.141.58:8080/retourProcedure?equipement=' + equipement + '&procedure=' + el.value, {}, function(data) {
+                        console.log(data);
+                        //alert(data.OID);
 
+
+                        document.getElementById("nom").value = el.value;
+                        document.getElementById("OID").value = data.OID;
+                        document.getElementById("frequence").value = data.Frequence;
+                        document.getElementById("valeur").value = data.Nbvaleurs;
+                        document.getElementById("unite").value = data.Unite;
+
+                    })
+                    .fail(function(data) {
+                        //alert( "error" );
+                        document.getElementById("OID").value = "";
+                        document.getElementById("frequence").value = "";
+                        document.getElementById("valeur").value = "";
+                        document.getElementById("unite").value = "";
+                    })
+                    .always(function(data) {
+                        //alert( "finished" );
+                    });
+
+            }
         }
 
 
@@ -120,7 +152,7 @@
 
             document.getElementById('retour').href = "/detail?equipement=" + equipement;
 
-            $.getJSON('http://localhost:5000/retourListProcedure?equipement=' + equipement, {}, function(data) {
+            $.getJSON('http://192.168.141.58:8080/retourListProcedure?equipement=' + equipement, {}, function(data) {
                     //alert(data.listeProcedure);
 
                     var select = document.getElementById("procedure");

@@ -19,10 +19,18 @@ from stat import ST_CTIME
 from glob import iglob
 app = Flask(__name__)
 
-PATH = "E:\\Master2\\Semestre 9\\SupervisionProject\\racine"
-serveur = "http://localhost:5000"
+PATH = "D:\\Users\\user\\Documents\\SupervisionProject\\racine"
+"""
+print(os.getcwd())
+os.chdir("..\\racine")
+PATH = os.getcwd()
+"""
+#print(os.getcwd())
+#PATH = "\\192.168.141.222\\racine"
+serveur = "http://192.168.141.58:8080"
 @app.route('/')
 def index():
+    
     return render_template('index.html')
     #return 'Hello, World!'
     
@@ -55,19 +63,19 @@ def actionAjout():
         NomAffichage = FQDN
         
     if(Marque == ""):
-        Marque = "Vide"
+        Marque = ""
         
     if(Modele == ""):
-        Modele = "Vide"
+        Modele = ""
         
     if(IP == ""):
         return redirect(f'{serveur}/ajout?manque=IP')
         
     if(Client == ""):
-        Client = "Vide"
+        Client = ""
         
     if(Localisation == ""):
-        Localisation = "Vide"
+        Localisation = ""
         
     if(VersionSNMP == ""):
         return redirect(f'{serveur}/ajout?manque=VersionSNMP')
@@ -76,16 +84,16 @@ def actionAjout():
         return redirect(f'{serveur}/ajout?manque=Communaute')
         
     if(User == ""):
-        User = "Vide"
+        User = ""
         
     if(Password == ""):
-        Password = "Vide"
+        Password = ""
         
     if(Clef == ""):
         Clef = ""
         
     if(Commentaire == ""):
-        Commentaire = "Vide"
+        Commentaire = ""
     
     
     print(FQDN)
@@ -146,7 +154,7 @@ def actionAjout():
     #creation fichier test-ping.json dans procedures
     testpingjson = "test-ping.json"
     print("creation test-ping.json")
-    testpingjsonString = {"FQDN procedure" : FQDN,"Frequence" : 10 ,"Nbvaleurs" : 1,"Unite" : "Bool"}
+    testpingjsonString = {"FQDN procedure" : FQDN,"Frequence" : 2 ,"Nbvaleurs" : 1,"Unite" : "Bool"}
     
     file = open(testpingjson, "w")
     json.dump(testpingjsonString, file)
@@ -158,7 +166,7 @@ def actionAjout():
     testpingjson = "test-ping.json"
     print("creation test-ping.json dans resultat")
 
-    testpingjsonString = {"FQDN procedure" : FQDN,"Frequence" : 10 ,"Nbvaleurs" : 1,"Unite" : "Bool","Result": []}
+    testpingjsonString = {"FQDN procedure" : FQDN,"Frequence" : 2 ,"Nbvaleurs" : 1,"Unite" : "Bool","Result": [0]}
     
     #testpingjson = json.loads(testpingjsonString)
     
@@ -172,38 +180,6 @@ def actionAjout():
     print(os.getcwd())
     return redirect(f'{serveur}/')
 
-"""@app.route('/infoSuppression')
-def infoSuppression():
-    listeFichiers = []
-    #for (repertoire) in walk("G:\\Master2\\Semestre 9\\SupervisionProject\\racine\\equipements"):
-    for (repertoire) in walk("E:\\Master2\\Semestre 9\\SupervisionProject\\racine\\equipements"):
-        listeFichiers.extend(repertoire)
- 
-    print(listeFichiers[1])
-    listeFinal = listeFichiers[1]
-    equipementURL = 0
-    count = 0
-    longueur = len(listeFinal)
-    for equipement in listeFinal:
-        if equipementURL == 0 and count == 0:
-            equipementURL = f"Equipement={equipement}&"
-            count = count + 1
-        elif (count == longueur-1):
-            equipementURL = equipementURL + f"Equipement{count}={equipement}"
-            count = count + 1
-        else:
-            equipementURL = equipementURL + f"Equipement{count}={equipement}&"
-            count = count + 1
-    
-    print(equipementURL)
-    
-    creation = request.args.get('creation','')
-    if creation == "":
-        return redirect(f"http://localhost:5000/suppression?{equipementURL}")
-    elif creation == "ok" or creation == "erreur":
-        return redirect(f"http://localhost:5000/suppression?{equipementURL}&creation={creation}")
-    #return redirect(f"http://localhost:5000/actionSuppression?Liste={listeFinal}")
-"""
 @app.route('/suppression')
 def suppression():
     return render_template('suppression.html')
@@ -243,26 +219,168 @@ def modifFQDN():
         #file = open(f"G:\\Master2\\Semestre 9\\SupervisionProject\\racine\\equipements\\{i}\\resultats\\test-ping.json", "r")
         InfosEquipement = json.load(file)
         file.close()
+        FQDNRetour = InfosEquipement["FQDN"]
         nom = InfosEquipement["NomAffichage"]
         marque = InfosEquipement["Marque"]
         modele = InfosEquipement["Modele"]
         ip = InfosEquipement["IP"]
         client = InfosEquipement["Client"]
-        OS = InfosEquipement["OS"]
+        OSRetour = InfosEquipement["OS"]
         localisation = InfosEquipement["Localisation"]
-        commentaire = InfosEquipement["Commentaire"]
-        
+        try:
+            commentaire = InfosEquipement["Commentaire"]
+        except:
+            commentaire = InfosEquipement["commentaire"]
+            
         file = open(f"{PATH}\\equipements\\{FQDN}\\procedures\\connexion.json", "r")
         #file = open(f"G:\\Master2\\Semestre 9\\SupervisionProject\\racine\\equipements\\{i}\\resultats\\test-ping.json", "r")
         InfosConnexionEquipement = json.load(file)
         file.close()
         version = InfosConnexionEquipement["Version"]
+        #print(version)
         communaute = InfosConnexionEquipement["Communaute"]
-        user = InfosConnexionEquipement["User"]
-        password = InfosConnexionEquipement["Password"]
-        key = InfosConnexionEquipement["Key"]
+        try:
+            user = InfosConnexionEquipement["User"]
+        except:
+            user = ""
         
-        return jsonify(Nom=nom, Marque=marque, Modele=modele, IP=ip, Client=client, OS=OS, Localisation=localisation, Commentaire=commentaire, Version=version, Communaute=communaute, User=user, Password=password, Key=key)
+        try:
+            password = InfosConnexionEquipement["Password"]
+        except:
+            password = ""
+        
+        try:
+            key = InfosConnexionEquipement["Key"]
+        except:
+            key = ""
+        
+        
+        
+        return jsonify(FQDN=FQDNRetour, Nom=nom, Marque=marque, Modele=modele, IP=ip, Client=client, OS=OSRetour, Localisation=localisation, Commentaire=commentaire, Version=version, Communaute=communaute, User=user, Password=password, Key=key)
+
+@app.route('/actionModif')
+def actionModif():
+    #ecrire dans les deux fichiers json connexion.json et fqdn.json
+    FQDNOld = request.args.get('equipementold','')
+    FQDN = request.args.get('FQDN','')
+    NomAffichage = request.args.get('NomAffichage','')
+    Marque = request.args.get('Marque','')
+    Modele = request.args.get('Modele','')
+    IP = request.args.get('IP','')
+    Client = request.args.get('Client','')
+    OS = request.args.get('OS','')
+    Localisation = request.args.get('Localisation','')
+    VersionSNMP = request.args.get('VersionSNMP','')
+    Communaute = request.args.get('Communaute','')
+    User = request.args.get('User','')
+    Password = request.args.get('Password','')
+    Clef = request.args.get('Clef','')
+    Commentaire = request.args.get('Commentaire','')
+    
+    
+    if(FQDN == ""):
+        return redirect(f'{serveur}/modifier?manque=FQDN')
+    
+    if(NomAffichage == ""):
+        NomAffichage = FQDN
+        
+    if(Marque == ""):
+        Marque = ""
+        
+    if(Modele == ""):
+        Modele = ""
+        
+    if(IP == ""):
+        return redirect(f'{serveur}/modifier?manque=IP')
+        
+    if(Client == ""):
+        Client = ""
+        
+    if(Localisation == ""):
+        Localisation = ""
+        
+    if(VersionSNMP == ""):
+        return redirect(f'{serveur}/modifier?manque=VersionSNMP')
+        
+    if(Communaute == ""):
+        return redirect(f'{serveur}/modifier?manque=Communaute')
+        
+    if(User == ""):
+        User = ""
+        
+    if(Password == ""):
+        Password = ""
+        
+    if(Clef == ""):
+        Clef = ""
+        
+    if(Commentaire == ""):
+        Commentaire = ""
+    
+    
+    print(FQDN)
+    print(NomAffichage)
+    print(Marque)
+    print(Modele)
+    print(IP)
+    print(Client)
+    print(OS)
+    print(Localisation)
+    print(VersionSNMP)
+    print(Communaute)
+    print(User)
+    print(Password)
+    print(Clef)
+    print(Commentaire)
+    
+    if FQDN != FQDNOld:
+        os.rename(f"{PATH}\\equipements\\{FQDNOld}", f"{PATH}\\equipements\\{FQDN}")
+    #on se place dans le repertoire equipements
+    print(os.getcwd())
+    os.chdir(f"{PATH}\\equipements\\{FQDN}")
+    print(os.getcwd())
+    
+    
+    os.remove(f"{FQDNOld}.json")
+    
+    equipementJSON = f"{FQDN}.json"
+    print(f"file name : {equipementJSON}")
+    
+    equipementjsonString = {"FQDN" : FQDN,"NomAffichage" : NomAffichage,"Marque" : Marque,"Modele" : Modele,"IP" : IP,"Client" : Client,"OS" : OS,"Localisation" : Localisation,"Commentaire" : Commentaire}
+    
+    file = open(equipementJSON, "w")
+    json.dump(equipementjsonString, file)
+    file.close()
+    
+    #on rentre dans procedures
+    os.chdir(".\\procedures")
+    
+    os.remove("connexion.json")
+    #creation fichier connexion.json
+    connexionjson = "connexion.json"
+    print("creation connexion.json")
+    if VersionSNMP == "V2":
+        connexionjsonString = {"FQDN" : FQDN ,"Version" : VersionSNMP,"Communaute" : Communaute,"User" : "","Password" : "","Key" : ""}
+    else:
+        connexionjsonString = {"FQDN" : FQDN ,"Version" : VersionSNMP,"Communaute" : Communaute,"User" : User,"Password" : Password,"Key" : Clef}
+
+    
+    file = open(connexionjson, "w")
+    json.dump(connexionjsonString, file)
+    file.close()
+    
+    #creation fichier test-ping.json dans procedures
+    testpingjson = "test-ping.json"
+    print("creation test-ping.json")
+    testpingjsonString = {"FQDN procedure" : FQDN,"Frequence" : 10 ,"Nbvaleurs" : 1,"Unite" : "Bool"}
+    
+    file = open(testpingjson, "w")
+    json.dump(testpingjsonString, file)
+    file.close()
+    
+    os.chdir(f"{PATH}")
+    print(os.getcwd())
+    return redirect(f'{serveur}/')
 
 @app.route('/returnList')
 def returnList():
@@ -283,58 +401,13 @@ def returnList():
         resultPing = resultPing['Result']
         #print(resultPing)
         listePing.append(resultPing)
-        if str(resultPing)=="True":
+        
+        if resultPing[0]!=0:
             nbUp = nbUp + 1
-    
-    nbDown = len(listeFichiers) - nbUp
-    """
-    listeCPU = []
-    for i in listeFichiers:
-        #print(i)
-        os.chdir(f"E:\\Master2\\Semestre 9\\SupervisionProject\\racine\\equipements\\{i}\\resultats")
-        if os.path.exists(f"E:\\Master2\\Semestre 9\\SupervisionProject\\racine\\equipements\\{i}\\resultats\\test-cpu.json"):
-        #if os.path.exists(f"G:\\Master2\\Semestre 9\\SupervisionProject\\racine\\equipements\\{i}\\resultats\\test-cpu.json"):
-            file = open(f"E:\\Master2\\Semestre 9\\SupervisionProject\\racine\\equipements\\{i}\\resultats\\test-cpu.json", "r")
-            #file = open(f"G:\\Master2\\Semestre 9\\SupervisionProject\\racine\\equipements\\{i}\\resultats\\test-cpu.json", "r")
-            resultCPU = json.load(file)
-            file.close()
-            #print(resultPing)
-            if resultCPU['Result'] != []:
-                resultCPU = resultCPU['Result']
-                #print(resultPing)
-                longueur = len(resultCPU)
-                listeCPU.append(resultCPU[longueur -1][0])
-            else:
-                listeCPU.append("None")
-        else:
-            listeCPU.append("None")
+        
             
-    listeRAM = []
-    listeUniteRam = []
-    for i in listeFichiers:
-        #print(i)
-        os.chdir(f"E:\\Master2\\Semestre 9\\SupervisionProject\\racine\\equipements\\{i}\\resultats")
-        if os.path.exists(f"E:\\Master2\\Semestre 9\\SupervisionProject\\racine\\equipements\\{i}\\resultats\\test-ram.json"):
-        #if os.path.exists(f"G:\\Master2\\Semestre 9\\SupervisionProject\\racine\\equipements\\{i}\\resultats\\test-ram.json"):    
-            file = open(f"E:\\Master2\\Semestre 9\\SupervisionProject\\racine\\equipements\\{i}\\resultats\\test-ram.json", "r")
-            #file = open(f"G:\\Master2\\Semestre 9\\SupervisionProject\\racine\\equipements\\{i}\\resultats\\test-ram.json", "r")
-            resultRAM = json.load(file)
-            file.close()
-            #print(resultPing)
-            if resultRAM['Result'] != []:
-                listeUniteRam.append(resultRAM['Unite'])
-                resultRAM = resultRAM['Result']
-                #print(resultPing)
-                longueur = len(resultRAM)
-                listeRAM.append(resultRAM[longueur -1][0])
-            else:
-                listeRAM.append("None")
-                listeUniteRam.append("None")
-        else:
-            listeRAM.append("None")
-            listeUniteRam.append("None")
-    #print(listeUniteRam)
-    """
+    nbDown = len(listeFichiers) - nbUp
+
     IP = []
     for i in listeFichiers:
         if os.path.exists(f"{PATH}\\equipements\\{i}\\{i}.json"):
@@ -389,22 +462,23 @@ def ajoutProcedure():
 def actionAjoutProcedure():
     FQDN = request.args.get('equipement','')
     OID = request.args.get('OID','')
+    Instance = request.args.get('instance','')
     frequence = request.args.get('frequence','')
     Unite = request.args.get('Unite','')
     valeur = request.args.get('valeur','')
     
+    oldOID = OID
+    OID = f"{OID}.{Instance}"
+    
     dicoOIDConnu = {
-        '1.3.6.1.4.1.9.9.109.1.1.1.1.24': 'cpu',
-        '1.3.6.1.4.1.9.9.221.1.1.1.1.18': 'ram',
-        '1.3.6.1.2.1.2.2.1.10': 'octet_in',  
-        '1.3.6.1.2.1.2.2.1.16': 'octet_out' 
+        '1.3.6.1.2.1.2.2.1.16': 'octet_out'
         }
     
     
     if(FQDN != "" and OID!= "" and frequence != "" and Unite != "" and valeur != ""):
         os.chdir(f"{PATH}\\equipements\\{FQDN}\\procedures")
         #os.chdir(f"G:\\Master2\\Semestre 9\\SupervisionProject\\racine\\equipements\\{FQDN}\\procedures")
-        nom = dicoOIDConnu[OID]
+        nom = dicoOIDConnu[oldOID]
         
         nomProcedure = f"test-{nom}.json"
         if os.path.exists(f"{PATH}\\equipements\\{FQDN}\\procedures\\{nomProcedure}"):
@@ -459,6 +533,7 @@ def actionModifProcedure():
                 
             file.close()
             print(data)
+            data["OID"] = OID
             data["Unite"] = Unite
             data["Frequence"] = int(frequence)
             data["Nbvaleurs"] = int(valeur)
@@ -560,9 +635,11 @@ def returnInfoEquipement():
         recup = test[5]
         test[5] = f"{recup}s"
         test = " ".join(test)
+        #nombres = f'{result_procedures[i][0]} {unite}'
         #absyss.append(result_procedures[i][1])
         absyss.append(test)
         ordonnee.append(result_procedures[i][0])
+        #ordonnee.append(nombres)
     #print(absyss)
     #print(ordonnee)
     return jsonify(retoura=absyss, retourb=ordonnee, unite=unite, frequence=frequence)
@@ -752,10 +829,11 @@ def stop():
 
 @app.route('/reload')
 def reload():
+    print("reload")
     FQDN = request.args.get('equipement','')
     commande = f"reload@{FQDN}"
     creationSocket(commande)
-    return redirect(f'{serveur}/')
+    return redirect(f'{serveur}/detail?equipement={FQDN}')
 
 def creationSocket(commande):
     print("function socket creation")
@@ -770,4 +848,4 @@ def creationSocket(commande):
         print("error")
     
 
-app.run(host="localhost", port=int("5000"))
+app.run(host="192.168.141.58", port=int("8080"))

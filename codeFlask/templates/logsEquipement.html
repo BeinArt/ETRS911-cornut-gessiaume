@@ -41,7 +41,7 @@
             //document.getElementById('titre').innerText = equipement;
 
 
-            var flickerAPI = 'http://localhost:5000/retourlogsequipement?equipement=' + equipement;
+            var flickerAPI = 'http://192.168.141.58:8080/retourlogsequipement?equipement=' + equipement;
             $.getJSON(flickerAPI, {})
                 .done(function(data) {
                     //alert(data.retourlogs);
@@ -60,6 +60,7 @@
                     titrelogEntier.id = "logEntier";
 
                     titrelogEntier.style.backgroundColor = "#D3D3D3";
+                    titrelogEntier.style.borderBottom = "solid 1px";
 
                     var titreFQDN = document.createElement("th");
                     var titretype = document.createElement("th");

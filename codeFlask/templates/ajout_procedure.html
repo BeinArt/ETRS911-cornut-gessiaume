@@ -43,41 +43,59 @@
         </div>
     </nav>
 
-    <form id="formulaire" action="/actionAjoutProcedure" method="get">
+    <form id="formulaire" action="/actionAjoutProcedure" method="get" style="margin:0.5%">
+
         <input type="hidden" id="FQDN" name="equipement" value="" readOnly="readOnly" />
         <div id="OIDSelection" class="OID" style="display:inline-flex; margin:0.3%;width:98%">
             <select class="form-select" name="OID" aria-label="Default select example">
                 <option id="selected" selected>Choisir un OID</option>
-                <option name="OID" value="1.3.6.1.4.1.9.9.109.1.1.1.1.24" onclick="OID('1.3.6.1.4.1.9.9.109.1.1.1.1.24')">1.3.6.1.4.1.9.9.109.1.1.1.1.24</option>
-                <option name="OID" value="1.3.6.1.4.1.9.9.221.1.1.1.1.18" onclick="OID('1.3.6.1.4.1.9.9.221.1.1.1.1.18')">1.3.6.1.4.1.9.9.221.1.1.1.1.18</option>
-                <option name="OID" value="1.3.6.1.2.1.2.2.1.10" onclick="OID('1.3.6.1.2.1.2.2.1.10')">1.3.6.1.2.1.2.2.1.10</option>
                 <option name="OID" value="1.3.6.1.2.1.2.2.1.16" onclick="OID('1.3.6.1.2.1.2.2.1.16')">1.3.6.1.2.1.2.2.1.16</option>
               </select>
             <br></br>
 
-              <!--<label>OID :  </label>
+            <!--<label>OID :  </label>
             <input type="text" name="OID">-->
         </div>
-
-        <div class="frequence">
+        <div style="width:30%">
+            <div class="form-group">
+                <label>Instance :  </label>
+                <input name="instance" type="text" class="form-control" placeholder="Entrer l'instance à monitorer.">
+            </div>
+            <!--<div class="frequence">
             <label>Frequence des requêtes :  </label>
             <input type="text" name="frequence">
-        </div>
+        </div>-->
+            <div class="form-group">
+                <label>Frequence des requêtes :  </label>
+                <input name="frequence" type="text" class="form-control" placeholder="Entrer la fréquences des requêtes">
+                <small class="form-text text-muted">Entrer la fréquece des requêtes en secondes.</small>
+            </div>
 
-        <div class="Communaute">
+            <!--<div class="Communaute">
             <label>Nombre de valeur a conserver :  </label>
             <input type="text" name="valeur">
-        </div>
+        </div>-->
+            <div class="form-group">
+                <label>Nombre de valeur : </label>
+                <input name="valeur" type="text" class="form-control" placeholder="Entrer le nombre de valeur à conserver">
+                <small class="form-text text-muted">Entrer le nombre de valeur à conserver.</small>
+            </div>
 
-        <div class="Unite">
+            <!--<div class="Unite">
             <label>Unité :  </label>
             <input type="text" name="Unite">
-        </div>
+        </div>-->
+            <div class="form-group">
+                <label>Unité :  </label>
+                <input name="Unite" type="text" class="form-control" placeholder="Entrer l'unité">
+                <small class="form-text text-muted">Entrer l'unité des valeurs souhaité.</small>
+            </div>
 
-        <button id="envoie_form" class="btn btn-primary" type="submit">Envoyer</button>
+            <button id="envoie_form" class="btn btn-primary" type="submit">Envoyer</button>
+        </div>
     </form>
 
-    <a id="retour" class="btn btn-primary" href="/">Retour</a>
+    <a id="retour" class="btn btn-primary" href="/" style="margin-left:0.5%">Retour</a>
 
 
     <script type="text/javascript">
@@ -89,16 +107,14 @@
         };
 
         document.getElementById('retour').href = "/detail?equipement=" + equipement;
-        
+
         var dicoOIDConnu = {
-        '1.3.6.1.4.1.9.9.109.1.1.1.1.24': ['cpu','iso. org. dod. internet. private. enterprises. cisco. ciscoMgmt. ciscoProcessMIB. ciscoProcessMIBObjects. cpmCPU. cpmCPUTotalTable. cpmCPUTotalEntry. cpmCPULoadAvg1min'],
-        '1.3.6.1.4.1.9.9.221.1.1.1.1.18': ['ram','iso. org. dod. internet. private. enterprises. cisco. ciscoMgmt. ciscoEnhancedMemPoolMIB. cempMIBObjects. cempMemPool. cempMemPoolTable. cempMemPoolEntry. cempMemPoolHCUsed'],
-        '1.3.6.1.2.1.2.2.1.10': ['nb octet entrant','iso. org. dod. internet. mgmt. mib-2. interfaces. ifTable. ifEntry. ifInOctets'], 
-        '1.3.6.1.2.1.2.2.1.16': ['nb octet sortant','iso. org. dod. internet. mgmt. mib-2. interfaces. ifTable. ifEntry. ifOutOctets'] 
+            '1.3.6.1.2.1.2.2.1.16': ['nb octet sortant', 'iso. org. dod. internet. mgmt. mib-2. interfaces. ifTable. ifEntry. ifOutOctets']
         }
-        function OID(OIDChoisi){
+
+        function OID(OIDChoisi) {
             var check = document.getElementById("nomChoisi");
-            if(check != null){
+            if (check != null) {
                 check.parentNode.removeChild(check);
             }
             //alert(dicoOIDConnu[OIDChoisi])
@@ -110,13 +126,13 @@
             nomOID.style.margin = "0.2%";
 
             var check2 = document.getElementById("nomChoisiComplet");
-            if(check2 != null){
+            if (check2 != null) {
                 check2.parentNode.removeChild(check2);
             }
             //alert(dicoOIDConnu[OIDChoisi])
             var nomOID2 = document.createElement("div");
             nomOID2.id = "nomChoisiComplet";
-            
+
             parent.appendChild(nomOID2);
             nomOID2.textContent = dicoOIDConnu[OIDChoisi][1] + " |";
             nomOID2.style.margin = "0.2%";

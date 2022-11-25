@@ -41,7 +41,7 @@
                         <a id="suppr" class="dropdown-item" href="#">Supprimer</a>
                     </div>
                 </li>
-                
+
             </ul>
 
             <ul class="navbar-nav mr-auto">
@@ -56,7 +56,7 @@
                     </div>
                 </li>
                 <li class="nav-item active">
-                    <a class="nav-link btn btn-warning" href="#">Reload <span class="sr-only">(current)</span></a>
+                    <a id="reload" class="nav-link btn btn-warning" href="#">Reload <span class="sr-only">(current)</span></a>
                 </li>
             </ul>
             <form class="form-inline my-2 my-lg-0">
@@ -72,7 +72,7 @@
             <canvas id="myChart"></canvas>
 
         </div>
-        <iframe id="logs" name="moniframe" style="float: right;height:700px; width:48%;border: solid;border-color: black;" width="40%" height="100%" src="http://localhost:5000/logsequipement" frameborder="0" scrolling="yes">
+        <iframe id="logs" name="moniframe" style="float: right;height:700px; width:48%;border: solid;border-color: black;" width="40%" height="100%" src="http://192.168.141.58:8080/logsequipement" frameborder="0" scrolling="yes">
         </iframe>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -90,14 +90,15 @@
         var equipement = url.searchParams.get("equipement");
         if (equipement != null) {
             document.getElementById('titre').innerText = equipement;
-            document.getElementById('titre').href = "http://localhost:5000/reload?equipement=" + equipement;
+            document.getElementById('titre').href = "http://192.168.141.58:8080/reload?equipement=" + equipement;
         };
-        document.getElementById('logs').src = "http://localhost:5000/logsequipement?equipement=" + equipement;
+        document.getElementById('logs').src = "http://192.168.141.58:8080/logsequipement?equipement=" + equipement;
         document.getElementById('ajout').href = "/ajoutProcedure?equipement=" + equipement;
         document.getElementById('modif').href = "/modifierProcedure?equipement=" + equipement;
         document.getElementById('suppr').href = "/supprProcedure?equipement=" + equipement;
+        document.getElementById('reload').href = "/reload?equipement=" + equipement;
 
-        var flickerAPI = 'http://localhost:5000/returnProceduresEquipement?equipement=' + equipement;
+        var flickerAPI = 'http://192.168.141.58:8080/returnProceduresEquipement?equipement=' + equipement;
         $.getJSON(flickerAPI, {})
             .done(function(data) {
 
@@ -121,7 +122,7 @@
         function GetInfos(nom, nomraccourci) {
             //alert(nom);
             //alert(equipement);
-            var flickerAPI = 'http://localhost:5000/returnInfoEquipement?equipement=' + equipement + '&procedures=' + nom;
+            var flickerAPI = 'http://192.168.141.58:8080/returnInfoEquipement?equipement=' + equipement + '&procedures=' + nom;
             $.getJSON(flickerAPI, {})
                 .done(function(infos) {
                     //alert(infos.retoura);
@@ -137,46 +138,52 @@
                         const labels = infos.retoura;
                         var valeurs = 0;
                         var optionsGraph = {};
-                        if (nom.includes("octet")){
+                        console.log(infos.retourb);
+                        
+                        if (nom.includes("octet")) {
                             /*alert("contient octet");
                             alert(infos.unite);
                             alert(infos.frequence);*/
                             var listeTemporaire = [];
                             var incrementation = 0;
                             var ancienneValeur = 0;
-                            infos.retourb.forEach(element => {
-                                if(infos.unite == "Go"){
-                                    element = element/1000000000;
-                                }else if(infos.unite == "Mo"){
-                                    element = element/1000000;
-                                }else if(infos.unite == "Ko"){
-                                    element = element/1000;
+                            listeFinale = infos.retourb.reverse()
+                            listeFinale.forEach(element => {
+                            var result = 0;
+                            //infos.retourb.forEach(element => {
+                                if (incrementation != 0) {
+                                    result = element - ancienneValeur;
                                 }
-                            
-                                if(incrementation != 0){
-                                    element = element - ancienneValeur;
-                                }
-                                element = element/infos.frequence;
-                                incrementation = incrementation + 1;
                                 ancienneValeur = element;
-                                listeTemporaire.push(element);
+                                if (infos.unite == "Go") {
+                                    result = result / 1000000000;
+                                } else if (infos.unite == "Mo") {
+                                    result = result / 1000000;
+                                } else if (infos.unite == "Ko") {
+                                    result = result / 1000;
+                                }
+                                result = result / infos.frequence;
+                                incrementation = incrementation + 1;
+                                result = result*-1;
+                                listeTemporaire.push(result);
                             });
 
                             valeurs = listeTemporaire;
+                            console.log(valeurs);
                             //alert(valeurs);
-                            
-                        }else{
+
+                        } else {
                             valeurs = infos.retourb;
-                            if(unite.includes("%")){ 
+                            if (unite.includes("%")) {
                                 optionsGraph = {
-                                scales: {
-                                    y: {
-                                        suggestedMin: 0,
-                                        suggestedMax: 100
+                                    scales: {
+                                        y: {
+                                            suggestedMin: 0,
+                                            suggestedMax: 100
+                                        }
                                     }
                                 }
                             }
-                        }   
                         }
                         const data = {
                             labels: labels,
@@ -187,8 +194,8 @@
                                 data: valeurs,
                             }]
                         };
-                        
-                        
+
+
                         const config = {
                             type: 'line',
                             data: data,

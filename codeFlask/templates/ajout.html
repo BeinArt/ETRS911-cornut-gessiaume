@@ -23,23 +23,15 @@
         <span class="navbar-toggler-icon"></span>
       </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav mr-left">
+            <ul class="navbar-nav mr-left"></ul>
 
-
-            </ul>
-
-            <ul class="navbar-nav mr-auto">
-
-
-            </ul>
+            <ul class="navbar-nav mr-auto"></ul>
             <form class="form-inline my-2 my-lg-0">
-
                 <a class="btn btn-outline-success my-2 my-sm-0" href="/">DashBoard</a>
-
             </form>
         </div>
     </nav>
-    <form id="formulaire" action="/actionAjout" method="get" style="width: 35%;margin:2%;">
+    <form id="formulaire" action="/actionAjout" method="get" style="width: 35%;margin:2%;margin-top:0.5%">
         <!--<div class="FQDN">
             <p id="erreur_FQDN"></p>
             <label>Nom FQDN (unique) :  </label>
@@ -50,7 +42,7 @@
             <label>FQDN :  </label>
             <input id="FQDN" name="FQDN" type="text" class="form-control" placeholder="Entrer FQDN">
             <small id="emailHelp" class="form-text text-muted">Entrez le nom de l'équipement, ce nom doit être unique.</small>
-          </div>
+        </div>
 
         <!--<div class="NomAffichage">
             <label>Nom d'affichage :  </label>
@@ -60,7 +52,7 @@
             <label>Nom :  </label>
             <input id="NomAffichage" name="NomAffichage" type="text" class="form-control" placeholder="Entrer nom">
             <small id="emailHelp" class="form-text text-muted">Entrez le nom que vous souhaité afficher sur le site.</small>
-          </div>
+        </div>
 
         <!--<div class="Marque">
             <label>Marque :  </label>
@@ -69,7 +61,7 @@
         <div class="form-group">
             <label>Marque :  </label>
             <input id="Marque" name="Marque" type="text" class="form-control" placeholder="Entrer la marque de l'équipement">
-          </div>
+        </div>
 
         <!--<div class="Modele">
             <label>Modèle:  </label>
@@ -78,7 +70,7 @@
         <div class="form-group">
             <label>Modèle :  </label>
             <input id="Modele" name="Modele" type="text" class="form-control" placeholder="Entrer le modèle de l'équipement">
-          </div>
+        </div>
 
         <!--<div class="IP">
             <p id="erreur_IP"></p>
@@ -88,9 +80,9 @@
         <div class="form-group">
             <p id="erreur_IP" style="color: red;font-weight: bold;"></p>
             <label>IP :  </label>
-            <input id="IP" name="IP" type="text" class="form-control" placeholder="Entrer l'@ IP de l'équipement" pattern="[^/]*">
+            <input id="IP" name="IP" type="text" class="form-control" placeholder="Entrer l'@IP de l'équipement" pattern="[^/]*">
             <small id="emailHelp" class="form-text text-muted">Entrez ne pas mettre le masque réseau.</small>
-          </div>
+        </div>
 
         <!--<div class="Client">
             <label>Client :  </label>
@@ -99,7 +91,7 @@
         <div class="form-group">
             <label>Client :  </label>
             <input id="Client" name="Client" type="text" class="form-control" placeholder="Entrer le nom du client qui possède l'équipement">
-          </div>
+        </div>
 
         <!--<div class="OS">
             <label>Operating System :  </label>
@@ -108,7 +100,7 @@
         <div class="form-group">
             <label>Système d'explotation :  </label>
             <input id="OS" name="OS" type="text" class="form-control" placeholder="Entrer le système d'explotation l'équipement">
-          </div>
+        </div>
 
         <!--<div class="Localisation">
             <label>Localisation :  </label>
@@ -117,7 +109,7 @@
         <div class="form-group">
             <label>Localisation :  </label>
             <input id="Localisation" name="Localisation" type="text" class="form-control" placeholder="Entrer la localisation l'équipement">
-          </div>
+        </div>
 
         <!--<div class="VersionSNMP">
                 <label>Version SNMP :  </label>
@@ -133,24 +125,24 @@
         </div>-->
         <fieldset class="form-group">
             <div class="row">
-              <legend class="col-form-label col-sm-2 pt-0">SNMP :</legend>
-              <div class="col-sm-10">
-                <div class="form-check" onclick="optionV3()">
-                  <input class="form-check-input" type="radio" name="VersionSNMP" id="gridRadios1" value="V3" checked>
-                  <label class="form-check-label" for="gridRadios1">
+                <legend class="col-form-label col-sm-2 pt-0">SNMP :</legend>
+                <div class="col-sm-10">
+                    <div class="form-check" onclick="optionV3()">
+                        <input class="form-check-input" type="radio" name="VersionSNMP" id="gridRadios1" value="V3" checked>
+                        <label class="form-check-label" for="gridRadios1">
                     Snmp V3
                   </label>
-                </div>
-                <div class="form-check" onclick="optionV2()">
-                  <input class="form-check-input" type="radio" name="VersionSNMP" id="gridRadios2" value="V2">
-                  <label class="form-check-label" for="gridRadios2">
+                    </div>
+                    <div class="form-check" onclick="optionV2()">
+                        <input class="form-check-input" type="radio" name="VersionSNMP" id="gridRadios2" value="V2">
+                        <label class="form-check-label" for="gridRadios2">
                     Snmp V2
                   </label>
+                    </div>
+
                 </div>
-                
-              </div>
             </div>
-          </fieldset>
+        </fieldset>
 
         <!--<div class="Communaute">
             <label>Communauté :  </label>
@@ -160,7 +152,7 @@
             <label>Communauté :  </label>
             <input id="Communaute" name="Communaute" type="text" class="form-control" placeholder="Entrer la communauté">
             <small id="emailHelp" class="form-text text-muted">Entrer la communauté à utiliser lors des requêtes SNMP.</small>
-          </div>
+        </div>
 
         <!--<div class="User" id='user_case'>
             <label>User :  </label>
@@ -170,7 +162,7 @@
             <label>Utilisateur :  </label>
             <input id="User" name="User" type="text" class="form-control" placeholder="Entrer l'utilisateur">
             <small id="emailHelp" class="form-text text-muted">Entrer l'utilisateur pour effectuer des requêtes SNMP.</small>
-          </div>
+        </div>
 
         <!--<div class="Password" id="password_case">
             <label>Password :  </label>
@@ -180,7 +172,7 @@
             <label>Mot de passe :  </label>
             <input id="Password" name="Password" type="password" class="form-control">
             <small id="emailHelp" class="form-text text-muted">Entrer le mot de passe pour effectuer des requêtes SNMP.</small>
-          </div>
+        </div>
 
         <!--<div class="clef" id="clef_case">
             <label>Clé de chiffrement :  </label>
@@ -188,8 +180,9 @@
         </div>-->
         <div class="form-group" id="clef_case">
             <label>Clé de chiffrement :  </label>
-            <input id="Clef" name="Clef" type="text" class="form-control">
-          </div>
+            <input id="Clef" name="Clef" type="text" class="form-control" placeholder="Entrer la clef de chiffrement">
+            <small id="emailHelp" class="form-text text-muted">Entrer la clef de chiffrement, utiliser pour l'envoie de requêtes sécurisé.</small>
+        </div>
 
         <!--<div class="Commentaire">
             <label>Commentaire :  </label>
@@ -197,7 +190,7 @@
         </div>-->
         <div class="form-group">
             <label>Commentaire :  </label>
-            <textarea class="form-control" name="Commentaire" id="exampleFormControlTextarea1" rows="3"></textarea>
+            <textarea class="form-control" name="Commentaire" id="exampleFormControlTextarea1" rows="3" placeholder="Votre commentaire ..."></textarea>
         </div>
         <button id="envoie_form" class="btn btn-primary" type="submit">Envoyer</button>
     </form>

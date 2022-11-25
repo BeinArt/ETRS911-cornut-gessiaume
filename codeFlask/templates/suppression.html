@@ -46,7 +46,7 @@
     </form>
     <script src="{{ url_for('static', filename='jquery.js') }}"></script>
     <script type="text/javascript">
-        var flickerAPI = 'http://localhost:5000/returnEquipement';
+        var flickerAPI = 'http://192.168.141.58:8080/returnEquipement';
         $.getJSON(flickerAPI, {})
             .done(function(data) {
 

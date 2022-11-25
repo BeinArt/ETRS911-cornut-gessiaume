@@ -23,15 +23,9 @@
         <span class="navbar-toggler-icon"></span>
       </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav mr-left">
+            <ul class="navbar-nav mr-left"></ul>
+            <ul class="navbar-nav mr-auto"></ul>
 
-
-            </ul>
-
-            <ul class="navbar-nav mr-auto">
-
-
-            </ul>
             <form class="form-inline my-2 my-lg-0">
 
                 <a class="btn btn-outline-success my-2 my-sm-0" href="/">DashBoard</a>
@@ -39,164 +33,104 @@
             </form>
         </div>
     </nav>
-    <form id="formulaire" action="/actionAjout" method="get" style="width: 35%;margin:2%;">
-        <!--<div class="FQDN">
-            <p id="erreur_FQDN"></p>
-            <label>Nom FQDN (unique) :  </label>
-            <input type="text" id="FQDN" name="FQDN">
-        </div>-->
-        <select class="form-select" aria-label="Default select example" id="equipementFQDN" >
-            <option selected>Open this select menu</option>
-            
+    <form id="formulaire" action="/actionModif" method="get" style="width: 35%;margin:2%;">
+        <input type="hidden" id="FQDNhidden" name="equipementold" value="" readOnly="readOnly" />
+        <select class="form-select" aria-label="Default select example" id="equipementFQDN">
+            <option selected onclick="reset()">Open this select menu</option>
           </select>
-        
 
-        <!--<div class="NomAffichage">
-            <label>Nom d'affichage :  </label>
-            <input type="text" name="NomAffichage">
-        </div>-->
+        <div class="form-group">
+            <p id="erreur_FQDN" style="color: red;font-weight: bold;"></p>
+            <label>FQDN :  </label>
+            <input id="FQDN" name="FQDN" type="text" class="form-control" placeholder="Entrer FQDN">
+            <small id="emailHelp" class="form-text text-muted">Entrez le nom de l'équipement, ce nom doit être unique.</small>
+        </div>
+
         <div class="form-group">
             <label>Nom :  </label>
             <input id="NomAffichage" name="NomAffichage" type="text" class="form-control" placeholder="Entrer nom">
             <small id="emailHelp" class="form-text text-muted">Entrez le nom que vous souhaité afficher sur le site.</small>
-          </div>
+        </div>
 
-        <!--<div class="Marque">
-            <label>Marque :  </label>
-            <input type="text" name="Marque">
-        </div>--->
         <div class="form-group">
             <label>Marque :  </label>
             <input id="Marque" name="Marque" type="text" class="form-control" placeholder="Entrer la marque de l'équipement">
-          </div>
+        </div>
 
-        <!--<div class="Modele">
-            <label>Modèle:  </label>
-            <input type="text" name="Modele">
-        </div>-->
         <div class="form-group">
             <label>Modèle :  </label>
             <input id="Modele" name="Modele" type="text" class="form-control" placeholder="Entrer le modèle de l'équipement">
-          </div>
+        </div>
 
-        <!--<div class="IP">
-            <p id="erreur_IP"></p>
-            <label>IP :  </label>
-            <input type="text" name="IP">
-        </div>-->
         <div class="form-group">
             <p id="erreur_IP" style="color: red;font-weight: bold;"></p>
             <label>IP :  </label>
             <input id="IP" name="IP" type="text" class="form-control" placeholder="Entrer l'@ IP de l'équipement" pattern="[^/]*">
             <small id="emailHelp" class="form-text text-muted">Entrez ne pas mettre le masque réseau.</small>
-          </div>
+        </div>
 
-        <!--<div class="Client">
-            <label>Client :  </label>
-            <input type="text" name="Client">
-        </div>-->
         <div class="form-group">
             <label>Client :  </label>
             <input id="Client" name="Client" type="text" class="form-control" placeholder="Entrer le nom du client qui possède l'équipement">
-          </div>
+        </div>
 
-        <!--<div class="OS">
-            <label>Operating System :  </label>
-            <input type="text" name="OS">
-        </div>-->
         <div class="form-group">
             <label>Système d'explotation :  </label>
             <input id="OS" name="OS" type="text" class="form-control" placeholder="Entrer le système d'explotation l'équipement">
-          </div>
+        </div>
 
-        <!--<div class="Localisation">
-            <label>Localisation :  </label>
-            <input type="text" name="Localisation">
-        </div>-->
         <div class="form-group">
             <label>Localisation :  </label>
             <input id="Localisation" name="Localisation" type="text" class="form-control" placeholder="Entrer la localisation l'équipement">
-          </div>
+        </div>
 
-        <!--<div class="VersionSNMP">
-                <label>Version SNMP :  </label>
-                <input type="text" name="VersionSNMP">
-            </div>-->
-
-        <!--<div class="VersionSNMP">
-            <label for="VersionSNMP">Version SNMP :</label>
-            <select name="VersionSNMP" id="VersionSNMP">
-                    <option class="dropdown-item" value="V3" onclick="optionV3()">V3</option>
-                    <option class="dropdown-item" value="V2" onclick="optionV2()">V2</option>
-                </select>
-        </div>-->
         <fieldset class="form-group">
             <div class="row">
-              <legend class="col-form-label col-sm-2 pt-0">SNMP :</legend>
-              <div class="col-sm-10">
-                <div class="form-check" onclick="optionV3()">
-                  <input class="form-check-input" type="radio" name="VersionSNMP" id="gridRadios1" value="V3">
-                  <label class="form-check-label" for="gridRadios1">
+                <legend class="col-form-label col-sm-2 pt-0">SNMP :</legend>
+                <div class="col-sm-10">
+                    <div class="form-check" onclick="optionV3()">
+                        <input class="form-check-input" type="radio" name="VersionSNMP" id="SNMPV3" value="V3">
+                        <label class="form-check-label" for="gridRadios1">
                     Snmp V3
                   </label>
-                </div>
-                <div class="form-check" onclick="optionV2()">
-                  <input class="form-check-input" type="radio" name="VersionSNMP" id="gridRadios2" value="V2">
-                  <label class="form-check-label" for="gridRadios2">
+                    </div>
+                    <div class="form-check" onclick="optionV2()">
+                        <input class="form-check-input" type="radio" name="VersionSNMP" id="SNMPV2" value="V2">
+                        <label class="form-check-label" for="gridRadios2">
                     Snmp V2
                   </label>
-                </div>
-                
-              </div>
-            </div>
-          </fieldset>
+                    </div>
 
-        <!--<div class="Communaute">
-            <label>Communauté :  </label>
-            <input type="text" name="Communaute">
-        </div>-->
+                </div>
+            </div>
+        </fieldset>
+
         <div class="form-group">
             <label>Communauté :  </label>
             <input id="Communaute" name="Communaute" type="text" class="form-control" placeholder="Entrer la communauté">
             <small id="emailHelp" class="form-text text-muted">Entrer la communauté à utiliser lors des requêtes SNMP.</small>
-          </div>
+        </div>
 
-        <!--<div class="User" id='user_case'>
-            <label>User :  </label>
-            <input type="text" name="User">
-        </div>-->
         <div class="form-group" id='user_case'>
             <label>Utilisateur :  </label>
             <input id="User" name="User" type="text" class="form-control" placeholder="Entrer l'utilisateur">
             <small id="emailHelp" class="form-text text-muted">Entrer l'utilisateur pour effectuer des requêtes SNMP.</small>
-          </div>
+        </div>
 
-        <!--<div class="Password" id="password_case">
-            <label>Password :  </label>
-            <input type="password" name="Password">
-        </div>-->
         <div class="form-group" id="password_case">
             <label>Mot de passe :  </label>
             <input id="Password" name="Password" type="password" class="form-control">
             <small id="emailHelp" class="form-text text-muted">Entrer le mot de passe pour effectuer des requêtes SNMP.</small>
-          </div>
+        </div>
 
-        <!--<div class="clef" id="clef_case">
-            <label>Clé de chiffrement :  </label>
-            <input type="text" name="Clef">
-        </div>-->
         <div class="form-group" id="clef_case">
             <label>Clé de chiffrement :  </label>
             <input id="Clef" name="Clef" type="text" class="form-control">
-          </div>
+        </div>
 
-        <!--<div class="Commentaire">
-            <label>Commentaire :  </label>
-            <input type="text" name="Commentaire">
-        </div>-->
         <div class="form-group">
             <label>Commentaire :  </label>
-            <textarea class="form-control" name="Commentaire" id="exampleFormControlTextarea1" rows="3"></textarea>
+            <textarea class="form-control" name="Commentaire" id="Commentaire" rows="3"></textarea>
         </div>
         <button id="envoie_form" class="btn btn-primary" type="submit">Envoyer</button>
     </form>
@@ -217,44 +151,149 @@
             }
         }
         window.onload = function() {
-            var flickerAPI = 'http://localhost:5000/recupFQDN';
+            var flickerAPI = 'http://192.168.141.58:8080/recupFQDN';
             $.getJSON(flickerAPI, {})
                 .done(function(data) {
                     //alert(data.fqdn);
                     data.fqdn.forEach(equipement => {
                         parent = document.getElementById("equipementFQDN");
                         leFQDN = document.createElement("option");
-                            
+
 
                         leFQDN.className = "dropdown-item";
-                        leFQDN.onClick = "equipement('" + equipement + "')";
+                        //leFQDN.onclick = "equipement('" + equipement + "')";
+                        leFQDN.setAttribute("onclick", "equipement('" + equipement + "')");
 
                         leFQDN.value = equipement;
                         leFQDN.textContent = equipement;
-                            
+
                         parent.appendChild(leFQDN);
 
 
-                            /*<option selected>Open this select menu</option>
-                                <option value="1">One</option>
-                                <option value="2">Two</option>
-                                <option value="3">Three</option>*/
+                        /*<option selected>Open this select menu</option>
+                            <option value="1">One</option>
+                            <option value="2">Two</option>
+                            <option value="3">Three</option>*/
                     });
                 });
         }
 
-        function equipement(equipement){
-            alert("ici");
-            var flickerAPI = 'http://localhost:5000/modifFQDN?equipement=' + equipement;
+        function equipement(equipement) {
+            var flickerAPI = 'http://192.168.141.58:8080/modifFQDN?equipement=' + equipement;
             $.getJSON(flickerAPI, {})
                 .done(function(data) {
-                        alert(data.Nom)
-                        document.getElementById("NomAffichage").textContent = data.Nom;
-                        
 
-                    });
-            }
-        
+                    document.getElementById('FQDNhidden').value = data.FQDN;
+
+                    titre = document.getElementById("titre");
+                    titre.textContent = "Modification de " + data.FQDN;
+
+                    FQDN = document.getElementById("FQDN");
+                    FQDN.value = data.FQDN;
+
+                    nom = document.getElementById("NomAffichage");
+                    nom.value = data.Nom;
+
+                    marque = document.getElementById("Marque");
+                    marque.value = data.Marque;
+
+                    modele = document.getElementById("Modele");
+                    modele.value = data.Modele;
+
+                    ip = document.getElementById("IP");
+                    ip.value = data.IP;
+
+                    client = document.getElementById("Client");
+                    client.value = data.Client;
+
+                    os = document.getElementById("OS");
+                    os.value = data.OS;
+
+                    localisation = document.getElementById("Localisation");
+                    localisation.value = data.Localisation;
+
+                    if (data.Version == "V2") {
+                        Snmp3 = document.getElementById("SNMPV3");
+                        Snmp3.checked = false;
+                        Snmp2 = document.getElementById("SNMPV2");
+                        Snmp2.checked = true;
+                        optionV2();
+                    } else if (data.Version == "V3") {
+                        Snmp2 = document.getElementById("SNMPV2");
+                        Snmp2.checked = false;
+                        Snmp3 = document.getElementById("SNMPV3");
+                        Snmp3.checked = true;
+                        optionV3();
+                    }
+                    Communaute = document.getElementById("Communaute");
+                    Communaute.value = data.Communaute;
+
+                    User = document.getElementById("User");
+                    User.value = data.User;
+
+                    Password = document.getElementById("Password");
+                    Password.value = data.Password;
+
+                    Key = document.getElementById("Clef");
+                    Key.value = data.Key;
+
+                    Commentaire = document.getElementById("Commentaire");
+                    Commentaire.value = data.Commentaire;
+
+                });
+        }
+
+        function reset() {
+            titre = document.getElementById("titre");
+            titre.textContent = "Modifier equipement";
+
+            FQDN = document.getElementById("FQDN");
+            FQDN.value = "";
+
+            nom = document.getElementById("NomAffichage");
+            nom.value = "";
+
+            marque = document.getElementById("Marque");
+            marque.value = "";
+
+            modele = document.getElementById("Modele");
+            modele.value = "";
+
+            ip = document.getElementById("IP");
+            ip.value = "";
+
+            client = document.getElementById("Client");
+            client.value = "";
+
+            os = document.getElementById("OS");
+            os.value = "";
+
+            localisation = document.getElementById("Localisation");
+            localisation.value = "";
+
+
+            Snmp3 = document.getElementById("SNMPV3");
+            Snmp3.checked = false;
+            Snmp2 = document.getElementById("SNMPV2");
+            Snmp2.checked = false;
+            optionV3();
+
+            Communaute = document.getElementById("Communaute");
+            Communaute.value = "";
+
+            User = document.getElementById("User");
+            User.value = "";
+
+            Password = document.getElementById("Password");
+            Password.value = "";
+
+            Key = document.getElementById("Clef");
+            Key.value = "";
+
+            Commentaire = document.getElementById("Commentaire");
+            Commentaire.value = "";
+        }
+
         function optionV2() {
             document.getElementById("user_case").style.display = 'none';
             document.getElementById("password_case").style.display = 'none';
@@ -270,7 +309,7 @@
         function tafonction(){
         // traitement
         var nombre = 0;
-        var result = get('http://localhost:5000/Todo2/entree2').json()
+        var result = get('http://192.168.141.58:8080/Todo2/entree2').json()
         console.log("resultat = " + result)
         document.getElementById("test").innerHTML = "<a id='retour' class='btn btn-primary' href='/'>" + nombre + "</a>";
         nombre = nombre + 1 ;

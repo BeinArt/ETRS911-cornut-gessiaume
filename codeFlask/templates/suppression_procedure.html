@@ -39,7 +39,7 @@
         </div>
     </nav>
 
-    <form id="formulaire" action="/actionSupprProcedure" method="get">
+    <form id="formulaire" action="/actionSupprProcedure" method="get" style="margin:0.5%">
         <input type="hidden" id="FQDN" name="equipement" value="" readOnly="readOnly" />
         <input type="hidden" id="nom" name="nom" value="" readOnly="readOnly" />
         <label for="procedure">Choisir une procédure :</label>
@@ -50,7 +50,7 @@
         <button id="envoie_form" class="btn btn-primary" type="submit">Envoyer</button>
     </form>
 
-    <a id="retour" class="btn btn-primary" href="/">Retour</a>
+    <a id="retour" class="btn btn-primary" href="/" style="margin-left:0.5%">Retour</a>
     <script src="{{ url_for('static', filename='jquery.js') }}"></script>
     <!--<script>
         $SCRIPT_ROOT = {
@@ -67,7 +67,7 @@
             var url = new URL(url);
             var equipement = url.searchParams.get("equipement");
             //alert($SCRIPT_ROOT + '/retourProcedure?equipement=' + equipement + '&procedure=' + el.value);
-            $.getJSON('http://localhost:5000/retourProcedure?equipement=' + equipement + '&procedure=' + el.value, {}, function(data) {
+            $.getJSON('http://192.168.141.58:8080/retourProcedure?equipement=' + equipement + '&procedure=' + el.value, {}, function(data) {
                     console.log(data);
                     //alert(data.OID);
                     document.getElementById("nom").value = el.value;
@@ -95,7 +95,7 @@
 
             document.getElementById('retour').href = "/detail?equipement=" + equipement;
 
-            $.getJSON('http://localhost:5000/retourListProcedure?equipement=' + equipement, {}, function(data) {
+            $.getJSON('http://192.168.141.58:8080/retourListProcedure?equipement=' + equipement, {}, function(data) {
                     //alert(data.listeProcedure);
 
                     var select = document.getElementById("procedure");

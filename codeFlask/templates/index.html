@@ -34,12 +34,12 @@
               Action
             </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a id="ajout" class="dropdown-item" href="http://localhost:5000/ajout">Ajouter un équipement</a>
-                        <a id="modif" class="dropdown-item" href="http://localhost:5000/suppression">Supprimer un équipement</a>
-                        <a id="suppr" class="dropdown-item" href="http://localhost:5000/modifier">Modifier un équipement</a>
+                        <a id="ajout" class="dropdown-item" href="http://192.168.141.58:8080/ajout">Ajouter un équipement</a>
+                        <a id="modif" class="dropdown-item" href="http://192.168.141.58:8080/suppression">Supprimer un équipement</a>
+                        <a id="suppr" class="dropdown-item" href="http://192.168.141.58:8080/modifier">Modifier un équipement</a>
                     </div>
                 </li>
-                
+
                 <!--<li class="nav-item active">
                     <a class="nav-link btn btn-success" href="http://localhost:5000/start">Start <span class="sr-only">(current)</span></a>
                 </li>
@@ -50,18 +50,18 @@
                     <a class="nav-link btn btn-danger" href="http://localhost:5000/stop">Stop <span class="sr-only">(current)</span></a>
                 </li>-->
             </ul>
-            
+
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item active" style="margin-right: 3%; margin-left: 10%;">
-                    <a class="nav-link btn btn-success" href="http://localhost:5000/start">Start <span class="sr-only">(current)</span></a>
+                    <a class="nav-link btn btn-success" href="http://192.168.141.58:8080/start">Start <span class="sr-only">(current)</span></a>
                 </li>
-                
+
                 <li class="nav-item active" style="margin-right: 3%; margin-left: 3%;">
-                    <a class="nav-link btn btn-warning" href="http://localhost:5000/restart">Restart <span class="sr-only">(current)</span></a>
-                </li>  
-                
+                    <a class="nav-link btn btn-warning" href="http://192.168.141.58:8080/restart">Restart <span class="sr-only">(current)</span></a>
+                </li>
+
                 <li class="nav-item active" style="margin-right: 3%; margin-left: 3%;">
-                    <a class="nav-link btn btn-danger" href="http://localhost:5000/stop">Stop <span class="sr-only">(current)</span></a>
+                    <a class="nav-link btn btn-danger" href="http://192.168.141.58:8080/stop">Stop <span class="sr-only">(current)</span></a>
                 </li>
             </ul>
 
@@ -93,7 +93,7 @@
 
         </div>
 
-        <iframe name="moniframe" style="float: right;height:775px; width:48%;border: solid;border-color: black;" width="40%" height="100%" src="http://localhost:5000/logsdashboard" frameborder="0" scrolling="yes">
+        <iframe name="moniframe" style="float: right;height:775px; width:48%;border: solid;border-color: black;" width="40%" height="100%" src="http://192.168.141.58:8080/logsdashboard" frameborder="0" scrolling="yes">
         </iframe>
     </div>
     <script src="{{ url_for('static', filename='jquery.js') }}"></script>
@@ -101,7 +101,7 @@
     <script>
         setInterval(function() {
             //alert($SCRIPT_ROOT)
-            var flickerAPI = 'http://localhost:5000/returnList';
+            var flickerAPI = 'http://192.168.141.58:8080/returnList';
             $.getJSON(flickerAPI, {})
                 .done(function(data) {
                     //$.getJSON($SCRIPT_ROOT + '/returnList', function(data) {
@@ -132,9 +132,9 @@
                     titrestatus.style.textAlign = "center";
                     var titrenomIP = document.createElement("th");
                     var titrecommentaire = document.createElement("th");
-                    
+
                     titrebalise1.style.backgroundColor = "#D3D3D3";
-                    
+                    titrebalise1.style.borderBottom = "solid 1px";
                     titrenomEquipement.textContent = "Nom";
                     titrestatus.textContent = "Status";
                     titrenomIP.textContent = "IP";
@@ -250,12 +250,9 @@
                         //logs.style.paddingLeft = '5%';
                         balise1.appendChild(logs);
                         if (data.resultLogs[pas] != "None" && data.resultLogs[pas] != []) {
-
                             //alert(data.resultLogs[pas])
                             logs.textContent = data.resultLogs[pas];
-
                         };
-
                         /*let ram = document.createElement("div");
                         ram.textContent = "";
                         ram.style.display = 'inline-block';

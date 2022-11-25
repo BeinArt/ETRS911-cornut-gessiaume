@@ -35,34 +35,6 @@ def FormatTime():
     day = now.strftime("%d")
     time = now.strftime("%H-%M-%S")
     return day+"-"+month+"-"+year+"-"+time
-
-def initialisation():
-    liste_equipements = os.listdir(PATH_equipement)
-    for equipement in liste_equipements:
-        with open(PATH_equipement+equipement+"/"+equipement+".json","r") as file_equipement:
-            adresse_ip = json.load(file_equipement)["IP"]
-        file_equipement.close()
-        for procedure in os.listdir(PATH_equipement+equipement+"/procedures/"):
-            if procedure == "connexion.json":
-                with open(PATH_equipement+equipement+"/procedures/connexion.json","r") as file_connexion:
-                    connexion = json.load(file_connexion)
-                file_connexion.close()
-            elif procedure == "test-ping.json":
-                with open(PATH_equipement+equipement+"/procedures/test-ping.json","r") as file_testping:
-                    test_ping = json.load(file_testping)
-                file_testping.close()
-                taches[PATH_equipement+equipement+"/procedures/test-ping.json"] = 1
-                new_thread = threading.Thread(target=testping,args=(adresse_ip,test_ping,PATH_equipement+equipement+"/resultats/test-ping.json",taches[PATH_equipement+equipement+"/procedures/test-ping.json"]))
-                new_thread.start()
-                print("Starting : "+PATH_equipement+equipement+"/procedures/"+procedure)
-            else:
-                with open(PATH_equipement+equipement+"/procedures/"+procedure,"r") as file_proceduresnmp:
-                    test_snmp = json.load(file_proceduresnmp)
-                file_proceduresnmp.close()
-                taches[PATH_equipement+equipement+"/procedures/"+procedure] = 1
-                new_thread = threading.Thread(target=testsnmp,args=(adresse_ip,test_snmp,connexion,PATH_equipement+equipement+"/resultats/"+procedure,taches[PATH_equipement+equipement+"/procedures/"+procedure]))
-                new_thread.start()
-                print("Starting : "+PATH_equipement+equipement+"/procedures/"+procedure)
             
 def testping(adresse,procedure,chemin,status):
     if status != 1:
@@ -75,7 +47,10 @@ def testping(adresse,procedure,chemin,status):
         command = ['ping',param,'1',adresse]
         res = subprocess.call(command)
         with open(chemin,"r") as outfile:
-            resT0 = json.load(outfile)["Result"][0]
+            try:
+                resT0 = json.load(outfile)["Result"][0]
+            except:
+                resT0 = 0
         outfile.close()
         now = FormatTime()
         if os.path.exists(chemin):
@@ -89,9 +64,9 @@ def testping(adresse,procedure,chemin,status):
                 outfile.close()
             with open(chemin,"w") as outfile:
                 if res == 0:
-                    json.dump({"FQDN procedure" : procedure["FQDN procedure"],"Frequence" : procedure["Frequence"],"Nb valeurs" : procedure["Nb valeurs"],"Unite" : procedure["Unite"],"Result" : [1]},outfile)
+                    json.dump({"FQDN procedure" : procedure["FQDN procedure"],"Frequence" : procedure["Frequence"],"Nbvaleurs" : procedure["Nbvaleurs"],"Unite" : procedure["Unite"],"Result" : [1]},outfile)
                 else:
-                    json.dump({"FQDN procedure" : procedure["FQDN procedure"],"Frequence" : procedure["Frequence"],"Nb valeurs" : procedure["Nb valeurs"],"Unite" : procedure["Unite"],"Result" : [0]},outfile)
+                    json.dump({"FQDN procedure" : procedure["FQDN procedure"],"Frequence" : procedure["Frequence"],"Nbvaleurs" : procedure["Nbvaleurs"],"Unite" : procedure["Unite"],"Result" : [0]},outfile)
             outfile.close()
             print("Next call : "+chemin)
             return restart(chemin)
@@ -108,34 +83,42 @@ def testsnmp(adresse,procedure,connexion,chemin,status):
         if True:
             time.sleep(procedure["Frequence"])
             if connexion["Version"] == "V2":
-                auth = pysnmp.CommunityData(connexion["Communaute"],mpModel=1)
-                snmpEngine = pysnmp.SnmpEngine()
-                data = pysnmp.ObjectType(pysnmp.ObjectIdentity(procedure["OID"]))
-                for (errorIndication, errorStatus, errorIndex, varBinds) in pysnmp.getCmd(snmpEngine,
-                                                                                    auth,
-                                                                                    pysnmp.UdpTransportTarget((adresse, 161)),
-                                                                                    pysnmp.ContextData(),
-                                                                                    data):
-                    if errorIndication or errorStatus:
-                        print(errorIndication or errorStatus)
-                        res = 0
-                        break
-                    else:
-                        for oid,val in varBinds:
-                            if procedure["Unite"] != "String":
-                                res = str(val)
-                                res = int(res)
-                            else:
-                                res = str(val)
+                try:
+                    auth = pysnmp.CommunityData(connexion["Communaute"],mpModel=1)
+                    snmpEngine = pysnmp.SnmpEngine()
+                    data = pysnmp.ObjectType(pysnmp.ObjectIdentity(procedure["OID"]))
+                    for (errorIndication, errorStatus, errorIndex, varBinds) in pysnmp.getCmd(snmpEngine,
+                                                                                        auth,
+                                                                                        pysnmp.UdpTransportTarget((adresse, 161)),
+                                                                                        pysnmp.ContextData(),
+                                                                                        data):
+                        if errorIndication or errorStatus:
+                            print(errorIndication or errorStatus)
+                            res = "0"
+                            break
+                        else:
+                            for oid,val in varBinds:
+                                if procedure["Unite"] != "String":
+                                    res = str(val)
+                                    res = int(res)
+                                else:
+                                    res = str(val)
+                except:
+                    res = "0"
             elif connexion["Version"] == "V3":
                 def cbFun(snmpEngine, sendRequestHandle, errorIndication,
                           errorStatus, errorIndex, varBinds, cbCtx):
                     if errorIndication:
                         print(errorIndication)
+                        with open(procedure["FQDN"],"w") as outfile:
+                            outfile.write("0")
+                        outfile.close()
                     elif errorStatus:
                         print('%s at %s' % (errorStatus.prettyPrint(),
                                             errorIndex and varBinds[int(errorIndex) - 1][0] or '?'))
-
+                        with open(procedure["FQDN"],"w") as outfile:
+                            outfile.write("0")
+                        outfile.close()
                     else:
                         for oid, val in varBinds:
                             with open(procedure["FQDN"],"w") as outfile:
@@ -169,19 +152,22 @@ def testsnmp(adresse,procedure,connexion,chemin,status):
                     [(GenerateOID(procedure["OID"]), None)],
                     cbFun
                 )
-
-                snmpEngine.transportDispatcher.runDispatcher()
-
-                config.delTransport(
-                    snmpEngine,
-                    udp.domainName
-                ).closeTransport()
                 
-                with open(procedure["FQDN"],"r") as outfile:
-                    res = outfile.readline()
-                outfile.close()
-                
-                os.remove(procedure["FQDN"])
+                try:
+                    snmpEngine.transportDispatcher.runDispatcher()
+                    config.delTransport(
+                        snmpEngine,
+                        udp.domainName
+                    ).closeTransport()
+                    
+                    with open(procedure["FQDN"],"r") as outfile:
+                        res = outfile.readline()
+                    outfile.close()
+                    
+                    os.remove(procedure["FQDN"])
+                except:
+                    res = "0"
+
             
             with open(chemin,"r") as outfile:
                 results = json.load(outfile)
@@ -192,7 +178,7 @@ def testsnmp(adresse,procedure,connexion,chemin,status):
             results["Unite"] = procedure["Unite"]
             results["Nbvaleurs"] = procedure["Nbvaleurs"]
             with open(chemin,"w") as outfile:
-                if len(results["Result"]) == procedure["Nbvaleurs"]:
+                while len(results["Result"]) >= procedure["Nbvaleurs"]:
                     results["Result"].pop(0)
                 now = FormatTime()
                 results["Result"].append((res,now))
@@ -206,7 +192,7 @@ def testsnmp(adresse,procedure,connexion,chemin,status):
                 results = json.load(outfile)
             outfile.close()
             with open(chemin,"w") as outfile:
-                if len(results["Result"]) == procedure["Nb valeurs"]:
+                while len(results["Result"]) >= procedure["Nbvaleurs"]:
                     results["Result"].pop(0)
                 results["Result"].append((res,now))
                 json.dump(results,outfile)
@@ -323,7 +309,7 @@ def CommandCenter():
                 ControlLoadProc(5, 1)
             split = decode.split("@")
             if split[0] == "Reload":
-                for procedure in os.listdir(PATH_equipement+split[1]+"/procedures/"):
+                for procedure in os.listdir(PATH_equipement+"/"+split[1]+"/procedures/"):
                     if procedure != "connexion.json":
                         KillTask(PATH_equipement+split[1]+"/procedures/"+procedure)
 
